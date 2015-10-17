@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
 {
   FILE *fp;
   int i;
-  int32_t *rs, *rt, *rd, *base, pc = 0, i32;
+  int32_t *rs, *rt, *rd, *base, pc = 0, i32, instr_index;
   int16_t i16, offset;
-  uint16_t ui16;
+  uint16_t ui16, sa;
   char *p, buf[6], str[40], programmemory[100][40], label[100][40];
   
   if((fp = fopen(argv[1],"r")) == NULL) {
@@ -132,6 +132,19 @@ int main(int argc, char *argv[])
 	and(rd,rs,rt);
       }
       pc++;
+    } else if((p = strcasestr(programmemory[pc], "xor")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rd = regset(p);
+	p = strchr(p, '$');
+	p++;
+	rs = regset(p);
+	p = strchr(p, '$');
+	p++;
+	rt = regset(p);
+	xor(rd,rs,rt);
+      }
+      pc++;
     } else if((p = strcasestr(programmemory[pc], "ori")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {
 	p++;
@@ -158,6 +171,38 @@ int main(int argc, char *argv[])
 	or(rd,rs,rt);
       }
       pc++;
+    } else if((p = strcasestr(programmemory[pc], "sll")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rd = regset(p);
+	p = strchr(p, '$');
+	p++;
+	rt = regset(p);
+	p = strchr(p, ' ');
+	p++;
+	sa = atoi(p);
+	sll(rd,rt,sa);
+      }
+      pc++;
+    } else if((p = strcasestr(programmemory[pc], "srl")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rd = regset(p);
+	p = strchr(p, '$');
+	p++;
+	rt = regset(p);
+	p = strchr(p, ' ');
+	p++;
+	sa = atoi(p);
+	srl(rd,rt,sa);
+      }
+      pc++;
+    } else if((p = strcasestr(programmemory[pc], "jr")) != NULL){
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rs = regset(p);
+	pc = jr(rs);
+      }
     } else if((p = strcasestr(programmemory[pc], "jalr")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {
 	p++;
@@ -166,6 +211,43 @@ int main(int argc, char *argv[])
 	p++;
 	rs = regset(p);
 	pc = jalr(rd,rs,&pc);
+      }
+    } else if((p = strcasestr(programmemory[pc] , "jal")) != NULL){
+      p = strchr(p, '.');
+      for(i = 0; i < 100; i++) {
+	if(strcmp(p, label[i]) == 0)
+	  break;
+      }
+      if(i == 100) {
+	printf("this label is not found : %s\n", p);
+	pc++;
+      } else {
+	instr_index = i;
+	pc = jal(instr_index);
+      }
+    } else if((p = strcasestr(programmemory[pc], "beq")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rs = regset(p);
+	p = strchr(p, '$');
+	p++;
+	rt = regset(p);
+	p = strchr(p, ' ');
+	p++;
+	offset = atoi(p);
+	pc = beq(rs,rt,offset);
+      }
+    } else if((p = strcasestr(programmemory[pc], "bne")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rs = regset(p);
+	p = strchr(p, '$');
+	p++;
+	rt = regset(p);
+	p = strchr(p, ' ');
+	p++;
+	offset = atoi(p);
+	pc = bne(rs,rt,offset);
       }
     } else if((p = strcasestr(programmemory[pc], "blez")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {
@@ -183,6 +265,60 @@ int main(int argc, char *argv[])
 	} else {
 	  offset = i - pc;
 	  pc += blez(rs, offset);
+	}
+      }
+    } else if((p = strcasestr(programmemory[pc], "bgez")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rs = regset(p);
+	p = strchr(p, ' ');
+	p++;
+	for(i = 0; i < 100; i++) {
+	  if(strcmp(p, label[i]) == 0)
+	    break;
+	}
+	if(i == 100) {
+	  printf("this label is not found : %s\n", p);
+	  pc++;
+	} else {
+	  offset = i - pc;
+	  pc += bgez(rs, offset);
+	}
+      }
+    } else if((p = strcasestr(programmemory[pc], "bgtz")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rs = regset(p);
+	p = strchr(p, ' ');
+	p++;
+	for(i = 0; i < 100; i++) {
+	  if(strcmp(p, label[i]) == 0)
+	    break;
+	}
+	if(i == 100) {
+	  printf("this label is not found : %s\n", p);
+	  pc++;
+	} else {
+	  offset = i - pc;
+	  pc += bgtz(rs, offset);
+	}
+      }
+    } else if((p = strcasestr(programmemory[pc], "bltz")) != NULL) {
+      if((p = strchr(p, '$')) != NULL) {
+	p++;
+	rs = regset(p);
+	p = strchr(p, ' ');
+	p++;
+	for(i = 0; i < 100; i++) {
+	  if(strcmp(p, label[i]) == 0)
+	    break;
+	}
+	if(i == 100) {
+	  printf("this label is not found : %s\n", p);
+	  pc++;
+	} else {
+	  offset = i - pc;
+	  pc += bltz(rs, offset);
 	}
       }
     } else if((p = strcasestr(programmemory[pc], "li")) != NULL) {

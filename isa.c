@@ -81,8 +81,10 @@ int32_t jr(int32_t *rs)
   return *rs;
 }
 
-int32_t jal(int32_t instr_index)
+int32_t jal(int32_t instr_index, int32_t pc)
 {
+  *(reg + 31) = pc + 1; 
+
   return instr_index;
 }
 

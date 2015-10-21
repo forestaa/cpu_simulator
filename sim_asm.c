@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 	pc++;
       } else {
 	instr_index = i;
-	pc = jal(instr_index);
+	pc = jal(instr_index, pc);
       }
     } else if((p = strcasestr(programmemory[pc], "beq")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {

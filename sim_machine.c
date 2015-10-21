@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     } else if(opcode == 0x0c000000) {
       instr_index = pm[i] & 0x03ffffff;
       printf("jal   %d", instr_index);
-      pc = jal(instr_index);
+      pc = jal(instr_index, pc);
     } else if(opcode == 0x10000000) {
       rs = reg + ((pm[pc] >> 21) & 0x0000001f);
       rt = reg + ((pm[pc] >> 16) & 0x0000001f);

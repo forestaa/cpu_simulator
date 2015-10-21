@@ -15,7 +15,7 @@ void xor(int32_t *, int32_t *, int32_t *);
 void sll(int32_t *, int32_t *, uint16_t);
 void srl(int32_t *, int32_t *, uint16_t);
 int32_t jr(int32_t *);
-int32_t jal(int32_t);
+int32_t jal(int32_t, int32_t);
 int32_t jalr(int32_t *, int32_t *, int32_t *);
 int32_t beq(int32_t *, int32_t *, int16_t);
 int32_t bne(int32_t *, int32_t *, int16_t);

@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
   int32_t *rs, *rt, *rd, *base, pc = 0, i32, instr_index;
   int16_t i16, offset;
   uint16_t ui16, sa;
-  char *p, buf[6], str[40], programmemory[100][40], label[100][40];
+  char *p, buf[6], str[40], programmemory[1000][40], label[1000][40];
   
   if((fp = fopen(argv[1],"r")) == NULL) {
     perror("open error");
@@ -52,8 +52,10 @@ int main(int argc, char *argv[])
     printf("%s", programmemory[i]);
 
   pc = 0;
+  while(strcmp(label[pc], "_min_caml_start\n") != 0)
+    pc++;
 
-  while(pc < 100) {
+  while(pc < 1000) {
     if((p = strcasestr(programmemory[pc], "addiu")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {
 	p++;
@@ -65,6 +67,7 @@ int main(int argc, char *argv[])
 	p++;
 	i16 = atoi(p);
 	addiu(rs,rt,i16);
+	printf("addiu r%-2ld r%-2ld %d\n", rs-reg, rt-reg, i16);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "addi")) != NULL) {
@@ -78,6 +81,7 @@ int main(int argc, char *argv[])
 	p++;
 	i16 = atoi(p);
 	addi(rs,rt,i16);
+	printf("addi  r%-2ld r%-2ld %d\n", rs-reg, rt-reg, i16);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "add")) != NULL) {
@@ -91,6 +95,7 @@ int main(int argc, char *argv[])
 	p++;
 	rt = regset(p);
 	add(rd,rs,rt);
+	printf("add   r%-2ld r%-2ld r%-2ld\n", rd-reg, rs-reg, rt-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "sub")) != NULL) {
@@ -104,6 +109,7 @@ int main(int argc, char *argv[])
 	p++;
 	rt = regset(p);
 	sub(rd,rs,rt);
+	printf("sub   r%-2ld r%-2ld r%-2ld\n", rd-reg, rs-reg, rt-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "slt")) != NULL) {
@@ -117,6 +123,7 @@ int main(int argc, char *argv[])
 	p++;
 	rt = regset(p);
 	slt(rd,rs,rt);
+	printf("slt   r%-2ld r%-2ld r%-2ld\n", rd-reg, rs-reg, rt-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "and")) != NULL) {
@@ -130,6 +137,7 @@ int main(int argc, char *argv[])
 	p++;
 	rt = regset(p);
 	and(rd,rs,rt);
+	printf("and   r%-2ld r%-2ld r%-2ld\n", rd-reg, rs-reg, rt-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "xor")) != NULL) {
@@ -143,6 +151,7 @@ int main(int argc, char *argv[])
 	p++;
 	rt = regset(p);
 	xor(rd,rs,rt);
+	printf("xor   r%-2ld r%-2ld r%-2ld\n", rd-reg, rs-reg, rt-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "ori")) != NULL) {
@@ -156,6 +165,7 @@ int main(int argc, char *argv[])
 	p++;
 	ui16 = atoi(p);
 	ori(rt,rs,ui16);
+	printf("ori   r%-2ld r%-2ld %d\n", rs-reg, rt-reg, ui16);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "or")) != NULL) {
@@ -169,6 +179,7 @@ int main(int argc, char *argv[])
 	p++;
 	rt = regset(p);
 	or(rd,rs,rt);
+	printf("or    r%-2ld r%-2ld r%-2ld\n", rd-reg, rs-reg, rt-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "sll")) != NULL) {
@@ -182,6 +193,7 @@ int main(int argc, char *argv[])
 	p++;
 	sa = atoi(p);
 	sll(rd,rt,sa);
+	printf("sll   r%-2ld r%-2ld %d\n", rd-reg, rt-reg, sa);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "srl")) != NULL) {
@@ -195,6 +207,7 @@ int main(int argc, char *argv[])
 	p++;
 	sa = atoi(p);
 	srl(rd,rt,sa);
+	printf("srl   r%-2ld r%-2ld %d\n", rd-reg, rt-reg, sa);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "jr")) != NULL){
@@ -202,6 +215,7 @@ int main(int argc, char *argv[])
 	p++;
 	rs = regset(p);
 	pc = jr(rs);
+	printf("jr    r%-2ld\n", rs-reg);
       }
     } else if((p = strcasestr(programmemory[pc], "jalr")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {
@@ -212,8 +226,10 @@ int main(int argc, char *argv[])
 	rs = regset(p);
 	pc = jalr(rd,rs,&pc);
       }
+      printf("jalr  r%-2ld r%-2ld\n", rd-reg, rs-reg);
     } else if((p = strcasestr(programmemory[pc] , "jal")) != NULL){
-      p = strchr(p, '.');
+      p = strchr(p, '\t');
+      p++;
       for(i = 0; i < 100; i++) {
 	if(strcmp(p, label[i]) == 0)
 	  break;
@@ -236,6 +252,7 @@ int main(int argc, char *argv[])
 	p++;
 	offset = atoi(p);
 	pc = beq(rs,rt,offset);
+	printf("beq   r%-2ld r%-2ld %d\n", rs-reg, rt-reg, offset);
       }
     } else if((p = strcasestr(programmemory[pc], "bne")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {
@@ -248,6 +265,7 @@ int main(int argc, char *argv[])
 	p++;
 	offset = atoi(p);
 	pc = bne(rs,rt,offset);
+	printf("bne   r%-2ld r%-2ld %d\n", rs-reg, rt-reg, offset);
       }
     } else if((p = strcasestr(programmemory[pc], "blez")) != NULL) {
       if((p = strchr(p, '$')) != NULL) {
@@ -265,6 +283,7 @@ int main(int argc, char *argv[])
 	} else {
 	  offset = i - pc;
 	  pc += blez(rs, offset);
+	  printf("blez  r%-2ld %d\n", rs-reg, offset);
 	}
       }
     } else if((p = strcasestr(programmemory[pc], "bgez")) != NULL) {
@@ -283,6 +302,7 @@ int main(int argc, char *argv[])
 	} else {
 	  offset = i - pc;
 	  pc += bgez(rs, offset);
+	  printf("bgez  r%-2ld %d\n", rs-reg, offset);
 	}
       }
     } else if((p = strcasestr(programmemory[pc], "bgtz")) != NULL) {
@@ -301,6 +321,7 @@ int main(int argc, char *argv[])
 	} else {
 	  offset = i - pc;
 	  pc += bgtz(rs, offset);
+	  printf("bgtz  r%-2ld %d\n", rs-reg, offset);
 	}
       }
     } else if((p = strcasestr(programmemory[pc], "bltz")) != NULL) {
@@ -313,12 +334,13 @@ int main(int argc, char *argv[])
 	  if(strcmp(p, label[i]) == 0)
 	    break;
 	}
-	if(i == 100) {
+	if(i == 1000) {
 	  printf("this label is not found : %s\n", p);
 	  pc++;
 	} else {
 	  offset = i - pc;
 	  pc += bltz(rs, offset);
+	  printf("bltz  r%-2ld %d\n", rs-reg, offset);
 	}
       }
     } else if((p = strcasestr(programmemory[pc], "li")) != NULL) {
@@ -339,6 +361,7 @@ int main(int argc, char *argv[])
 	p++;
 	i16 = atoi(p);
 	lui(rt,i16);
+	printf("lui   r%-2ld %d\n", rt-reg, i16);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "move")) != NULL) {
@@ -349,6 +372,7 @@ int main(int argc, char *argv[])
 	p++;
 	rs = regset(p);
 	move(rd,rs);
+	printf("move  r%-2ld %-2ld\n", rd-reg, rs-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "sw")) != NULL) {
@@ -369,6 +393,7 @@ int main(int argc, char *argv[])
 	p++;
 	base = regset(p);
 	sw(rt,offset,base);
+	printf("sw    r%-2ld %d(r%ld)\n", rt-reg, offset, base-reg);
       }
       pc++;
     } else if((p = strcasestr(programmemory[pc], "lw")) != NULL) {
@@ -389,6 +414,7 @@ int main(int argc, char *argv[])
 	p++;
 	base = regset(p);
 	lw(rt,offset,base);
+	printf("lw    r%-2ld %d(r%ld)\n", rt-reg, offset, base-reg);
       }
       pc++;
     } else if(strcmp(programmemory[pc], "END\n") == 0) {

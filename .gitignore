@@ -1,0 +1,7 @@
+*.o
+*~
+'#'*
+sim_asm
+sim_machine
+test_
+test.c

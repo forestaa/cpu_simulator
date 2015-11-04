@@ -1,7 +1,9 @@
+#include <stdio.h>
 #include <stdint.h>
 #include "sim.h"
 
-int32_t reg[32], memory[1048576];
+int32_t cc, reg[32], memory[1048576];
+float freg[32];
 
 void add(int32_t *rd, int32_t *rs, int32_t *rt)
 {
@@ -81,8 +83,10 @@ int32_t jr(int32_t *rs)
   return *rs;
 }
 
-int32_t jal(int32_t instr_index)
+int32_t jal(int32_t instr_index, int32_t pc)
 {
+  reg[31] = pc + 1; 
+
   return instr_index;
 }
 
@@ -187,6 +191,127 @@ void sw(int32_t *rt, int16_t offset, int32_t *base)
 void lw(int32_t *rt, int16_t offset, int32_t *base)
 {
   *rt = memory[*base + offset];
+
+  return;
+}
+
+void add_s(float *fd, float *fs, float *ft)
+{
+  *fd = *fs + *ft;
+
+  return;
+}
+
+void sub_s(float *fd, float *fs, float *ft)
+{
+  *fd = *fs - *ft;
+
+  return;
+}
+
+void mul_s(float *fd, float *fs, float *ft)
+{
+  *fd = *fs * *ft;
+
+  return;
+}
+
+void div_s(float *fd, float *fs, float *ft)
+{
+  *fd = *fs / *ft;
+
+  return;
+}
+
+void mov_s(float *fd, float *fs)
+{
+  *fd = *fs;
+
+  return;
+}
+
+void c_eq_s(float *fs, float *ft)
+{
+  if(*fs == *ft)
+    cc = 1;
+  else
+    cc = 0;
+  
+  return;
+}
+
+void c_olt_s(float *fs, float *ft)
+{
+  if(*fs < *ft)
+    cc = 1;
+  else
+    cc = 0;
+
+  return;
+}
+
+void c_ole_s(float *fs, float *ft)
+{
+  if(*fs <= *ft)
+    cc = 1;
+  else
+    cc = 0;
+
+  return;
+}
+
+int32_t bc1t(int16_t offset)
+{
+  if(cc == 1)
+    return offset;
+  else
+    return 1;
+}
+
+void swc1(float *ft, int16_t offset, int32_t *base)
+{
+  memory[*base + offset] = *ft;
+
+  return;
+}
+
+void lwc1(float *ft, int16_t offset, int32_t *base)
+{
+  *ft = memory[*base + offset];
+
+  return;
+}
+
+void mfc1(int32_t *rd, float *fs)
+{
+  *rd = *(int32_t *)fs;
+
+  return;
+}
+
+void mtc1(int32_t *rt, float *fs)
+{
+  *fs = *(float *)rt;
+
+  return;
+}
+
+void syscall()
+{
+  if(reg[2] == 1)
+    fprintf(stdout, "%d", reg[5]);
+  else if(reg[2] == 2)
+    fprintf(stdout, "%f", freg[12]);
+  else if(reg[2] == 5)
+    fscanf(stdin, "%d", &reg[2]);
+  else if(reg[2] == 6)
+    fscanf(stdin, "%f", &freg[0]);
+  else if(reg[2] == 11)
+    fprintf(stdout, "%c", *((char *)(reg+5) + 3));
+  else if(reg[2] == 6)
+    fscanf(stdin, "%f", &freg[0]);
+  else
+    fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2]);
 
   return;
 }

@@ -17,4 +17,4 @@ $(TARGET2): sim_machine.c $(OBJS2)
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-	rm -f $(TARGET1) $(TARGET2) $(OBJS1) $(OBJS2) *~ '#'*
+	rm -f $(TARGET1) $(TARGET2) $(OBJS1) $(OBJS2) *~ '#'* result.txt output

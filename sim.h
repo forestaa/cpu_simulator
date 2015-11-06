@@ -1,7 +1,7 @@
 #ifndef __SIM_H__
 #define __SIM_H__
 
-extern int32_t cc, reg[32], memory[1048576];
+extern int32_t pc, cc, reg[32], memory[1048576];
 extern float freg[32];
 
 void add(int32_t *, int32_t *, int32_t *);
@@ -16,8 +16,8 @@ void xor(int32_t *, int32_t *, int32_t *);
 void sll(int32_t *, int32_t *, uint16_t);
 void srl(int32_t *, int32_t *, uint16_t);
 int32_t jr(int32_t *);
-int32_t jal(int32_t, int32_t);
-int32_t jalr(int32_t *, int32_t *, int32_t *);
+int32_t jal(int32_t);
+int32_t jalr(int32_t *, int32_t *);
 int32_t beq(int32_t *, int32_t *, int16_t);
 int32_t bne(int32_t *, int32_t *, int16_t);
 int32_t blez(int32_t *, int16_t);

@@ -5,3 +5,5 @@ sim_asm
 sim_machine
 test_
 test.c
+result.txt
+output

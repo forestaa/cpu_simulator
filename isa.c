@@ -2,9 +2,6 @@
 #include <stdint.h>
 #include "sim.h"
 
-int32_t cc, reg[32], memory[1048576];
-float freg[32];
-
 void add(int32_t *rd, int32_t *rs, int32_t *rt)
 {
   *rd = *rs + *rt;
@@ -83,16 +80,16 @@ int32_t jr(int32_t *rs)
   return *rs;
 }
 
-int32_t jal(int32_t instr_index, int32_t pc)
+int32_t jal(int32_t instr_index)
 {
   reg[31] = pc + 1; 
 
   return instr_index;
 }
 
-int32_t jalr(int32_t *rd, int32_t *rs, int32_t *pc)
+int32_t jalr(int32_t *rd, int32_t *rs)
 {
-  *rd = *pc + 1;
+  *rd = pc + 1;
 
   return *rs;
 }

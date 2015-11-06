@@ -5,7 +5,8 @@
 #include <string.h>
 #include "sim.h"
 
-int32_t reg[32] = {0}, memory[1048576] = {0};
+int32_t pc = 0, cc, reg[32] = {0}, memory[1048576] = {0};
+float freg[32] = {0};
 int32_t *regset(char *);
 
 void bufclear(char *buf)

@@ -77,6 +77,11 @@ void addiu(int32_t *rt, int32_t *rs, int16_t i)
   return;
 }
 
+int32_t j(int32_t instr_index)
+{
+  return instr_index;
+}
+
 int32_t jr(int32_t *rs)
 {
   return *rs;

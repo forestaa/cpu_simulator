@@ -4,7 +4,7 @@
 #include "sim.h"
 
 int instr_c = 0, add_c = 0, sub_c = 0, slt_c = 0, and_c = 0, or_c = 0, xor_c = 0, sll_c = 0, srl_c = 0;
-int addi_c = 0, addiu_c = 0, jr_c = 0, jal_c = 0, jalr_c = 0, beq_c = 0, bne_c = 0, blez_c = 0, bgez_c = 0, bgtz_c = 0, bltz_c = 0;
+int addi_c = 0, addiu_c = 0, jr_c = 0, j_c = 0, jal_c = 0, jalr_c = 0, beq_c = 0, bne_c = 0, blez_c = 0, bgez_c = 0, bgtz_c = 0, bltz_c = 0;
 int lui_c = 0, ori_c = 0, li_c = 0, move_c = 0, sw_c = 0, lw_c = 0, add_s_c = 0, sub_s_c = 0, mul_s_c = 0, div_s_c = 0, mov_s_c = 0;
 int c_eq_s_c = 0, c_olt_s_c = 0, c_ole_s_c = 0, bc1t_c = 0, swc1_c = 0, lwc1_c = 0, mfc1_c = 0, mtc1_c = 0, syscall_c = 0;
 int breakflag = 0, breakpoint, printflag = 0;
@@ -171,6 +171,15 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "addiu r%-2ld r%-2ld %d\n", rs-reg, rt-reg, i16);
       pc++;
       addiu_c++;
+    } else if(opcode == 0x08000000) {
+      if((pm[pc] & 0x02000000) == 0x02000000)
+	instr_index = pm[pc] | 0xfc000000;
+      else
+	instr_index = pm[pc] & 0x03ffffff;
+      if(printflag == 1)
+	fprintf(stderr, "j     %08x\n", instr_index);
+      pc += j(instr_index);
+      j_c++;
     } else if(opcode == 0x0c000000) {
       if((pm[pc] & 0x02000000) == 0x02000000)
 	instr_index = pm[pc] | 0xfc000000;

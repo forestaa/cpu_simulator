@@ -3,7 +3,7 @@
 
 extern int32_t pc, cc, reg[32], memory[1048576];
 extern float freg[32];
-extern int instr_c, add_c, sub_c, slt_c, and_c, or_c, xor_c, sll_c, srl_c, addi_c, addiu_c, jr_c, jal_c, jalr_c, beq_c, bne_c, blez_c, bgez_c, bgtz_c, bltz_c, lui_c, ori_c, li_c, move_c, sw_c, lw_c, add_s_c, sub_s_c, mul_s_c, div_s_c, mov_s_c, c_eq_s_c, c_olt_s_c, c_ole_s_c, bc1t_c, swc1_c, lwc1_c, mfc1_c, mtc1_c, syscall_c;
+extern int instr_c, add_c, sub_c, slt_c, and_c, or_c, xor_c, sll_c, srl_c, addi_c, addiu_c, j_c, jr_c, jal_c, jalr_c, beq_c, bne_c, blez_c, bgez_c, bgtz_c, bltz_c, lui_c, ori_c, li_c, move_c, sw_c, lw_c, add_s_c, sub_s_c, mul_s_c, div_s_c, mov_s_c, c_eq_s_c, c_olt_s_c, c_ole_s_c, bc1t_c, swc1_c, lwc1_c, mfc1_c, mtc1_c, syscall_c;
 
 void print_status()
 {
@@ -20,6 +20,7 @@ void print_status()
   fprintf(stderr, "srl         : %d\n", srl_c); 
   fprintf(stderr, "addi        : %d\n", addi_c); 
   fprintf(stderr, "addiu       : %d\n", addiu_c); 
+  fprintf(stderr, "j           : %d\n", j_c);  
   fprintf(stderr, "jr          : %d\n", jr_c); 
   fprintf(stderr, "jal         : %d\n", jal_c); 
   fprintf(stderr, "jalr        : %d\n", jalr_c);

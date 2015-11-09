@@ -6,7 +6,7 @@
 
 extern int32_t pc, cc, reg[32], memory[1048576];
 extern float freg[32];
-extern int breakflag, breakpoint, printflag;
+extern int stepflag, breakflag, breakpoint, printflag;
 
 void getoption(int argc, char *argv[])
 {
@@ -18,7 +18,7 @@ void getoption(int argc, char *argv[])
       fprintf(stderr, "options\n-h: help\n-s: step exec\n-p: print execut instructions\n-b n: breakpoint n\n");
       exit(0);
     case 's':
-      breakflag = 1;
+      stepflag = 1;
       breakpoint = pc;
       break;
     case 'p':
@@ -43,7 +43,7 @@ void bpoint()
   char cmd[20], *p;
   int i;
   
-  while(breakflag == 1 && pc == breakpoint) {
+  while((stepflag == 1 || breakflag == 1) && pc == breakpoint) {
     fprintf(stderr, "this is breakpoint\n");
     fgets(cmd, 20, stdin);
     p = strchr(cmd, '\n');
@@ -56,21 +56,7 @@ void bpoint()
       printflag = 0;
     else if(strstr(cmd, "print") != NULL) {
       p = strchr(cmd, ' ');
-      if((p = strchr(p, 'r')) != NULL) {
-	p++;
-	i = atoi(p);
-	if(i < 32)
-	  fprintf(stderr, "r%-2d = %d\n", i, reg[i]);
-	else
-	  fprintf(stderr, "this register does not exist : r%d\n", i);
-      } else if((p = strchr(p, 'f')) != NULL) {
-	p++;
-	i = atoi(p);
-	if(i < 32)
-	  fprintf(stderr, "f%-2d = %f\n", i, freg[i]);
-	else
-	  fprintf(stderr, "this register does not exist : r%d\n", i);
-      } else if((p = strstr(p, "memory")) != NULL) {
+      if(strstr(p, "memory") != NULL) {
 	p = strchr(cmd, ']');
 	*p = '\0';
 	p = strchr(cmd, '[');
@@ -80,13 +66,32 @@ void bpoint()
 	  fprintf(stderr, "memory[%d] = %d\n", i, memory[i]);
 	else
 	  fprintf(stderr, "memory does not have that size\n");
-      } 
+      } else if(strchr(p, 'r') != NULL) {
+	p = strchr(p, 'r');
+	p++;
+	i = atoi(p);
+	if(i < 32)
+	  fprintf(stderr, "r%-2d = %d\n", i, reg[i]);
+	else
+	  fprintf(stderr, "this register does not exist : r%d\n", i);
+      } else if(strchr(p, 'f') != NULL) {
+	p = strchr(p, 'f');
+	p++;
+	i = atoi(p);
+	if(i < 32)
+	  fprintf(stderr, "f%-2d = %f\n", i, freg[i]);
+	else
+	  fprintf(stderr, "this register does not exist : f%d\n", i);
+      }
     } else if(strstr(cmd, "break") != NULL) {
       p = strchr(cmd, ' ');
       p++;
       breakpoint = atoi(p);
-    } else if(strcmp(cmd, "run") == 0)
+      breakflag = 1;
+    } else if(strcmp(cmd, "run") == 0) {
+      stepflag = 0;
       breakflag = 0;
+    }
     else
       fprintf(stderr, "usage\nstep: one instruction execute\nprintflag: printflag goes on\nprint rn: print r[n]\nprint memory[n]: print memory[n]\nbreak n: n is set as breakpoint\nrun: run until quit\n");
   }

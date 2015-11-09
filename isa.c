@@ -77,76 +77,95 @@ void addiu(int32_t *rt, int32_t *rs, int16_t i)
   return;
 }
 
-int32_t j(int32_t instr_index)
+void j(int32_t instr_index)
 {
-  return instr_index;
+  pc += instr_index;
+
+  return;
 }
 
-int32_t jr(int32_t *rs)
+void jr(int32_t *rs)
 {
-  return *rs;
+  pc = *rs;
+  
+  return;
 }
 
-int32_t jal(int32_t instr_index)
+void jal(int32_t instr_index)
 {
   reg[31] = pc + 1; 
 
-  return instr_index;
+  pc += instr_index;
+  
+  return;
 }
 
-int32_t jalr(int32_t *rd, int32_t *rs)
+void jalr(int32_t *rd, int32_t *rs)
 {
   *rd = pc + 1;
 
-  return *rs;
+  pc = *rs;
+  return;
 }
 
-int32_t beq(int32_t *rs, int32_t *rt, int16_t offset)
+void beq(int32_t *rs, int32_t *rt, int16_t offset)
 {
   if(*rs == *rt)
-    return offset;
+    pc += offset;
   else
-    return 1;
+    pc++;
+
+  return;
 }
 
-int32_t bne(int32_t *rs, int32_t *rt, int16_t offset)
+void bne(int32_t *rs, int32_t *rt, int16_t offset)
 {
   if(*rs != *rt)
-    return offset;
+    pc += offset;
   else
-    return 1;
+    pc++;
+
+  return;
 }
 
-int32_t blez(int32_t *rs, int16_t offset)
+void blez(int32_t *rs, int16_t offset)
 {
   if(*rs <= 0)
-    return offset;
+    pc += offset;
   else
-    return 1;
+    pc++;
+
+  return;
 }
 
-int32_t bgez(int32_t *rs, int16_t offset)
+void bgez(int32_t *rs, int16_t offset)
 {
   if(*rs >= 0)
-    return offset;
+    pc += offset;
   else
-    return 1;
+    pc++;
+
+  return;
 }
 
-int32_t bgtz(int32_t *rs, int16_t offset)
+void bgtz(int32_t *rs, int16_t offset)
 {
   if(*rs > 0)
-    return offset;
+    pc += offset;
   else
-    return 1;
+    pc++;
+
+  return;
 }
 
-int32_t bltz(int32_t *rs, int16_t offset)
+void bltz(int32_t *rs, int16_t offset)
 {
   if(*rs < 0)
-    return offset;
+    pc += offset;
   else
-    return 1;
+    pc++;
+
+  return;
 }
 
 void lui(int32_t *rt, int16_t i)
@@ -264,12 +283,14 @@ void c_ole_s(float *fs, float *ft)
   return;
 }
 
-int32_t bc1t(int16_t offset)
+void bc1t(int16_t offset)
 {
   if(cc == 1)
-    return offset;
+    pc += offset;
   else
-    return 1;
+    pc++;
+
+  return;
 }
 
 void swc1(float *ft, int16_t offset, int32_t *base)

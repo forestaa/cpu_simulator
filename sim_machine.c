@@ -7,7 +7,7 @@ int instr_c = 0, add_c = 0, sub_c = 0, slt_c = 0, and_c = 0, or_c = 0, xor_c = 0
 int addi_c = 0, addiu_c = 0, jr_c = 0, j_c = 0, jal_c = 0, jalr_c = 0, beq_c = 0, bne_c = 0, blez_c = 0, bgez_c = 0, bgtz_c = 0, bltz_c = 0;
 int lui_c = 0, ori_c = 0, li_c = 0, move_c = 0, sw_c = 0, lw_c = 0, add_s_c = 0, sub_s_c = 0, mul_s_c = 0, div_s_c = 0, mov_s_c = 0;
 int c_eq_s_c = 0, c_olt_s_c = 0, c_ole_s_c = 0, bc1t_c = 0, swc1_c = 0, lwc1_c = 0, mfc1_c = 0, mtc1_c = 0, syscall_c = 0;
-int breakflag = 0, breakpoint, printflag = 0;
+int stepflag = 0, breakflag = 0, breakpoint, printflag = 0;
 int32_t pc = 0, cc = 0, reg[32] = {0}, memory[1048576] = {0};
 float freg[32] = {0};
 
@@ -106,24 +106,24 @@ int main(int argc, char *argv[])
 	xor_c++;
       } else if(opcode == 0x00000008) {
 	rs = reg + ((pm[pc] >> 21) & 0x0000001f);
-	if(printflag == 1)
-	  fprintf(stderr, "jr    r%-2ld\n", rs-reg);
-	if(breakflag == 1 && pc == breakpoint - 1) {
-	  pc = jr(rs);
+	if(stepflag == 1 && pc == breakpoint - 1) {
+	  jr(rs);
 	  breakpoint = pc;
 	} else
-	  pc = jr(rs);
+	  jr(rs);
+	if(printflag == 1)
+	  fprintf(stderr, "jr    r%-2ld\n", rs-reg);
 	jr_c++;
       } else if(opcode == 0x00000009) {
 	rs = reg + ((pm[pc] >> 21) & 0x0000001f);
 	rd = reg + ((pm[pc] >> 11) & 0x0000001f);
-	if(printflag == 1)
-	  fprintf(stderr, "jalr  r%-2ld r%-2ld\n", rd-reg, rs-reg);
-	if(breakflag == 1 && pc == breakpoint - 1) {
-	  pc = jalr(rd,rs);
+	if(stepflag == 1 && pc == breakpoint - 1) {
+	  jalr(rd,rs);
 	  breakpoint = pc;
 	} else
-	  pc = jalr(rd,rs);
+	  jalr(rd,rs);
+	if(printflag == 1)
+	  fprintf(stderr, "jalr  r%-2ld r%-2ld\n", rd-reg, rs-reg);
 	jalr_c++;
       } else if(opcode == 0x00000000) {
 	rt = reg + ((pm[pc] >> 16) & 0x0000001f);
@@ -176,24 +176,36 @@ int main(int argc, char *argv[])
 	instr_index = pm[pc] | 0xfc000000;
       else
 	instr_index = pm[pc] & 0x03ffffff;
+      if(stepflag == 1 && pc == breakpoint - 1) {
+	j(instr_index);
+	breakpoint = pc;
+      } else
+	j(instr_index);
       if(printflag == 1)
 	fprintf(stderr, "j     %08x\n", instr_index);
-      pc += j(instr_index);
       j_c++;
     } else if(opcode == 0x0c000000) {
       if((pm[pc] & 0x02000000) == 0x02000000)
 	instr_index = pm[pc] | 0xfc000000;
       else
 	instr_index = pm[pc] & 0x03ffffff;
+      if(stepflag == 1 && pc == breakpoint - 1) {
+	jal(instr_index);
+	breakpoint = pc;
+      } else
+	jal(instr_index);
       if(printflag == 1)
 	fprintf(stderr, "jal   %08x\n", instr_index);
-      pc += jal(instr_index);
       jal_c++;
     } else if(opcode == 0x10000000) {
       rs = reg + ((pm[pc] >> 21) & 0x0000001f);
       rt = reg + ((pm[pc] >> 16) & 0x0000001f);
       offset = pm[pc];
-      pc += beq(rs,rt,offset);
+      if(stepflag == 1 && pc == breakpoint - 1) {
+	beq(rs,rt,offset);
+	breakpoint = pc;
+      } else
+	beq(rs,rt,offset);
       if(printflag == 1)
 	fprintf(stderr, "beq   r%-2ld r%-2ld %d\n", rs-reg, rt-reg, offset);
       beq_c++;
@@ -201,14 +213,22 @@ int main(int argc, char *argv[])
       rs = reg + ((pm[pc] >> 21) & 0x0000001f);
       rt = reg + ((pm[pc] >> 16) & 0x0000001f);
       offset = pm[pc];
-      pc += bne(rs,rt,offset);
+      if(stepflag == 1 && pc == breakpoint - 1) {
+	bne(rs,rt,offset);
+	breakpoint = pc;
+      } else
+	bne(rs,rt,offset);
       if(printflag == 1)
 	fprintf(stderr, "bne   r%-2ld r%-2ld %d\n", rs-reg, rt-reg, offset);
       bne_c++;
     } else if(opcode == 0x18000000) {
       rs = reg + ((pm[pc] >> 21) & 0x0000001f); 
       offset = pm[pc];
-      pc += blez(rs,offset);
+      if(stepflag == 1 && pc == breakpoint - 1) {
+	blez(rs,offset);
+	breakpoint = pc;
+      } else
+	blez(rs,offset);
       if(printflag == 1)
 	fprintf(stderr, "blez  r%-2ld %d\n", rs-reg, offset);
       blez_c++;
@@ -216,12 +236,20 @@ int main(int argc, char *argv[])
       rs = reg + ((pm[pc] >> 21) & 0x0000001f); 
       offset = pm[pc];
       if((pm[pc] & 0x000f0000) == 0x00010000) {
-	pc += bgez(rs,offset);
+	if(stepflag == 1 && pc == breakpoint - 1) {
+	  bgez(rs,offset);
+	  breakpoint = pc;
+	} else
+	  bgez(rs,offset);
 	if(printflag == 1)
 	  fprintf(stderr, "bgez  r%-2ld %d\n", rs-reg, offset);
 	bgez_c++;
       } else if((pm[pc] & 0x000f0000) == 0x00000000) {
-	pc += bltz(rs,offset);
+	if(stepflag == 1 && pc == breakpoint - 1) {
+	  bltz(rs,offset);
+	  breakpoint = pc;
+	} else
+	  bltz(rs,offset);
 	if(printflag == 1)
 	  fprintf(stderr, "bltz  r%-2ld %d\n", rs-reg, offset);
 	bltz_c++;
@@ -232,7 +260,11 @@ int main(int argc, char *argv[])
     } else if(opcode == 0x1c000000) {
       rs = reg + ((pm[pc] >> 21) & 0x0000001f); 
       offset = pm[pc];
-      pc += bgtz(rs,offset);
+      if(stepflag == 1 && pc == breakpoint - 1) {
+	bgtz(rs,offset);
+	breakpoint = pc;
+      } else
+	bgtz(rs,offset);
       if(printflag == 1)
 	fprintf(stderr, "bgtz  r%-2ld %d\n", rs-reg, offset);
       bgtz_c++;
@@ -345,7 +377,11 @@ int main(int argc, char *argv[])
 	opcode = pm[pc] & 0x03e00000;
 	if(opcode == 0x01000000) {
 	  offset = pm[pc];
-	  pc += bc1t(offset);
+	  if(stepflag == 1 && pc == breakpoint - 1) {
+	    bc1t(offset);
+	    breakpoint = pc;
+	  } else
+	    bc1t(offset);
 	  if(printflag == 1)
 	    fprintf(stderr, "bc1t   %d\n", offset);
 	  bc1t_c++;

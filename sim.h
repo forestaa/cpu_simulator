@@ -1,9 +1,6 @@
 #ifndef __SIM_H__
 #define __SIM_H__
 
-extern int32_t pc, cc, reg[32], memory[1048576];
-extern float freg[32];
-
 void add(int32_t *, int32_t *, int32_t *);
 void addi(int32_t *, int32_t *, int16_t);
 void addiu(int32_t *, int32_t *, int16_t);
@@ -45,4 +42,8 @@ void mfc1(int32_t *, float *);
 void mtc1(int32_t *, float *);
 
 void syscall();
+
+void getoption(int, char **);
+void bpoint();
+void print_status();
 #endif

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "sim.h"
+
+extern int32_t pc, cc, reg[32], memory[1048576];
+extern float freg[32];
 
 void add(int32_t *rd, int32_t *rs, int32_t *rt)
 {
@@ -296,7 +298,7 @@ void mtc1(int32_t *rt, float *fs)
 void syscall()
 {
   if(reg[2] == 1)
-    fprintf(stdout, "%d", reg[5]);
+    fprintf(stdout, "%d", reg[4]);
   else if(reg[2] == 2)
     fprintf(stdout, "%f", freg[12]);
   else if(reg[2] == 5)
@@ -304,9 +306,7 @@ void syscall()
   else if(reg[2] == 6)
     fscanf(stdin, "%f", &freg[0]);
   else if(reg[2] == 11)
-    fprintf(stdout, "%c", *((char *)(reg+5) + 3));
-  else if(reg[2] == 6)
-    fscanf(stdin, "%f", &freg[0]);
+    fprintf(stdout, "%c", reg[4]);
   else
     fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2]);
 

@@ -321,6 +321,20 @@ void mtc1(int32_t *rt, float *fs)
   return;
 }
 
+void cvt_s_w(float *fd, float *fs)
+{
+  *fd = *(int32_t *)fs;
+
+  return;
+}
+
+void trunc_w_s(float *fd, float *fs)
+{
+  *fd = (int32_t)*fs;
+
+  return;
+}
+
 void syscall()
 {
   if(reg[2] == 1)

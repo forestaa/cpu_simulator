@@ -41,6 +41,8 @@ void swc1(float *, int16_t, int32_t *);
 void lwc1(float *, int16_t, int32_t *);
 void mfc1(int32_t *, float *);
 void mtc1(int32_t *, float *);
+void cvt_s_w(float *, float *);
+void trunc_w_s(float *, float *);
 
 void syscall();
 

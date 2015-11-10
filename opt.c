@@ -66,6 +66,8 @@ void bpoint()
 	  fprintf(stderr, "memory[%d] = %d\n", i, memory[i]);
 	else
 	  fprintf(stderr, "memory does not have that size\n");
+      } else if(strstr(p, "pc") != NULL) {
+	fprintf(stderr, "pc = %d\n", pc);
       } else if(strchr(p, 'r') != NULL) {
 	p = strchr(p, 'r');
 	p++;

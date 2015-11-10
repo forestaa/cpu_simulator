@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
   FILE *fp;
   int i;
-  uint32_t pm[50000];
+  uint32_t pm[50000], loadaddr;
   int32_t *rs, *rt, *rd, *base, opcode, instr_index;
   float *fs, *ft, *fd;
   int16_t i16, offset;
@@ -24,6 +24,12 @@ int main(int argc, char *argv[])
   if((fp = fopen(argv[argc-1],"r")) == NULL) {
     perror("open error");
     return 0;
+  }
+
+  fread(&loadaddr,4,1,fp);
+  while(loadaddr != 0x7000003f) {
+    fread(&memory[loadaddr],4,1,fp);
+    fread(&loadaddr,4,1,fp);
   }
 
   fread(&pc,4,1,fp);

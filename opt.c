@@ -56,7 +56,12 @@ void bpoint()
       printflag = 0;
     else if(strstr(cmd, "print") != NULL) {
       p = strchr(cmd, ' ');
-      if(strstr(p, "memory") != NULL) {
+      if(strstr(p, "all") != NULL) {
+	for(i = 0; i < 32; i++)
+	  fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i], reg[i]);
+	for(i = 0; i < 32; i++)
+	  fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
+      } else if(strstr(p, "memory") != NULL) {
 	p = strchr(cmd, ']');
 	*p = '\0';
 	p = strchr(cmd, '[');

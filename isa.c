@@ -79,7 +79,7 @@ void addiu(int32_t *rt, int32_t *rs, int16_t i)
 
 void j(int32_t instr_index)
 {
-  pc += instr_index;
+  pc = instr_index;
 
   return;
 }
@@ -95,7 +95,7 @@ void jal(int32_t instr_index)
 {
   reg[31] = pc + 1; 
 
-  pc += instr_index;
+  pc = instr_index;
   
   return;
 }

@@ -3,10 +3,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <string.h>
-
-extern int32_t pc, cc, reg[32], memory[1048576];
-extern float freg[32];
-extern int stepflag, breakflag, breakpoint, printflag;
+#include "def.h"
 
 void getoption(int argc, char *argv[])
 {
@@ -41,7 +38,7 @@ void getoption(int argc, char *argv[])
 void bpoint()
 { 
   char cmd[20], *p;
-  int i;
+  int i, f = 0;
   
   while((stepflag == 1 || breakflag == 1) && pc == breakpoint) {
     fprintf(stderr, "this is breakpoint\n");
@@ -62,14 +59,19 @@ void bpoint()
 	for(i = 0; i < 32; i++)
 	  fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
       } else if(strstr(p, "memory") != NULL) {
+	if(strstr(cmd, "-f") != NULL)
+	  f = 1;
 	p = strchr(cmd, ']');
 	*p = '\0';
 	p = strchr(cmd, '[');
 	p++;
 	i = atoi(p);
-	if(i < 1048576)
-	  fprintf(stderr, "memory[%d] = %d\n", i, memory[i]);
-	else
+	if(i < 1048576) {
+	  if(f == 1)
+	    fprintf(stderr, "memory[%d] = %f  0x%08x\n", i, memory[i].f, memory[i].i);
+	  else
+	    fprintf(stderr, "memory[%d] = %d  0x%08x\n", i, memory[i].i, memory[i].i);
+	} else
 	  fprintf(stderr, "memory does not have that size\n");
       } else if(strstr(p, "pc") != NULL) {
 	fprintf(stderr, "pc = %d\n", pc);

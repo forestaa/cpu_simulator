@@ -5,8 +5,23 @@
 #include <string.h>
 #include "sim.h"
 
-int32_t pc = 0, cc, reg[32] = {0}, memory[1048576] = {0};
+
+typedef Memory Value;
+
+typedef struct Assembli_ {
+  int line, arg1, arg2, arg3;
+  char label[30], instr[20], arglabel[30];
+} Assembli;
+
+typedef struct Data_ {
+  char label[10];
+  int addr;
+  Value value;
+} Data;
+
+int32_t pc = 0, cc, reg[32] = {0};
 float freg[32] = {0};
+Memory memory[1048576] = {0};
 int32_t *regset(char *);
 
 void bufclear(char *buf)

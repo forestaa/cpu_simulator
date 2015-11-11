@@ -1,5 +1,5 @@
-#ifndef __SIM_H__
-#define __SIM_H__
+#ifndef __FUNC_H__
+#define __FUNC_H__
 
 void add(int32_t *, int32_t *, int32_t *);
 void addi(int32_t *, int32_t *, int16_t);

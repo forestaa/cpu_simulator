@@ -45,7 +45,7 @@ step: 命令を一個実行する。次で止まる。入力なしでenterでも
 pflagon: プリントフラグを立てる。breakpoint設定したあと、命令を出力せずに特定のとこまで進めて、そこから命令を出力しながらデバッグするのに使える(と思われる)。
 pflagoff: プリントフラグを切る。デバッグ終わったら切ろう。
 print: 現在のpcやレジスタ、メモリの中身を出力する。使い方はこう
-print r3,  print f3,  print memory[3], print pc, print all(全てのレジスタの中身をint, floatと16進数で表示)
+print r3,  print f3,  print memory[3](最後に -fつけると、浮動小数表示する), print pc, print all(全てのレジスタの中身をint, floatと16進数で表示)
 レジスタをソフトウェア名で指定したかったら言ってください。次に実行する命令や現在のpcが見たくなっても言ってください。なにか見たくなったら言ってください即時実装します。
 break: breakpointを再設定します。使い方はこう
 break 100

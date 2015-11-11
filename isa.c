@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-
-extern int32_t pc, cc, reg[32], memory[1048576];
-extern float freg[32];
+#include "def.h"
 
 void add(int32_t *rd, int32_t *rs, int32_t *rt)
 {
@@ -79,7 +77,7 @@ void addiu(int32_t *rt, int32_t *rs, int16_t i)
 
 void j(int32_t instr_index)
 {
-  pc = instr_index;
+  pc += instr_index;
 
   return;
 }
@@ -95,7 +93,7 @@ void jal(int32_t instr_index)
 {
   reg[31] = pc + 1; 
 
-  pc = instr_index;
+  pc += instr_index;
   
   return;
 }
@@ -206,14 +204,14 @@ void move(int32_t *rd, int32_t *rs)
 
 void sw(int32_t *rt, int16_t offset, int32_t *base)
 {
-  memory[*base + offset] = *rt;
+  memory[*base + offset].i = *rt;
 
   return;
 } 
 
 void lw(int32_t *rt, int16_t offset, int32_t *base)
 {
-  *rt = memory[*base + offset];
+  *rt = memory[*base + offset].i;
 
   return;
 }
@@ -295,14 +293,14 @@ void bc1t(int16_t offset)
 
 void swc1(float *ft, int16_t offset, int32_t *base)
 {
-  memory[*base + offset] = *ft;
+  memory[*base + offset].f = *ft;
 
   return;
 }
 
 void lwc1(float *ft, int16_t offset, int32_t *base)
 {
-  *ft = memory[*base + offset];
+  *ft = memory[*base + offset].f;
 
   return;
 }

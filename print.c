@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-
-extern int32_t pc, cc, reg[32], memory[1048576];
-extern float freg[32];
-extern int instr_c, add_c, sub_c, slt_c, and_c, or_c, xor_c, sll_c, srl_c, addi_c, addiu_c, j_c, jr_c, jal_c, jalr_c, beq_c, bne_c, blez_c, bgez_c, bgtz_c, bltz_c, lui_c, ori_c, li_c, move_c, sw_c, lw_c, add_s_c, sub_s_c, mul_s_c, div_s_c, mov_s_c, c_eq_s_c, c_olt_s_c, c_ole_s_c, bc1t_c, swc1_c, lwc1_c, mfc1_c, mtc1_c, cvt_s_w_c, trunc_w_s_c, syscall_c;
+#include "def.h"
 
 void print_status()
 {
@@ -53,9 +50,9 @@ void print_status()
   fprintf(stderr, "syscall     : %d\n", syscall_c);
     
   for(i = 0; i < 32; i++)
-    fprintf(stderr, "r%-2d  %d\n", i, reg[i]);
+    fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i], reg[i]);
  
   for(i = 0; i < 32; i++)
-    fprintf(stderr, "f%-2d  %f\n", i, freg[i]);
+    fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
 
 }

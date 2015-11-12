@@ -3,10 +3,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "sim.h"
-
-
-typedef Memory Value;
+#include "def.h"
+#include "func.h"
 
 typedef struct Assembli_ {
   int line, arg1, arg2, arg3;
@@ -16,7 +14,7 @@ typedef struct Assembli_ {
 typedef struct Data_ {
   char label[10];
   int addr;
-  Value value;
+  Memory value;
 } Data;
 
 int32_t pc = 0, cc, reg[32] = {0};

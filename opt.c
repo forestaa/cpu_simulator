@@ -5,6 +5,7 @@
 #include <string.h>
 #include "def.h"
 
+int regnum(char *);
 void getoption(int argc, char *argv[])
 {
   int i;
@@ -75,14 +76,6 @@ void bpoint()
 	  fprintf(stderr, "memory does not have that size\n");
       } else if(strstr(p, "pc") != NULL) {
 	fprintf(stderr, "pc = %d\n", pc);
-      } else if(strchr(p, 'r') != NULL) {
-	p = strchr(p, 'r');
-	p++;
-	i = atoi(p);
-	if(i < 32)
-	  fprintf(stderr, "r%-2d = %d\n", i, reg[i]);
-	else
-	  fprintf(stderr, "this register does not exist : r%d\n", i);
       } else if(strchr(p, 'f') != NULL) {
 	p = strchr(p, 'f');
 	p++;
@@ -91,6 +84,13 @@ void bpoint()
 	  fprintf(stderr, "f%-2d = %f\n", i, freg[i]);
 	else
 	  fprintf(stderr, "this register does not exist : f%d\n", i);
+      } else {
+	p++;
+	i = regnum(p);
+	if(i < 32)
+	  fprintf(stderr, "r%-2d = %d\n", i, reg[i]);
+	else
+	  fprintf(stderr, "this register does not exist : r%d\n", i);
       }
     } else if(strstr(cmd, "break") != NULL) {
       p = strchr(cmd, ' ');

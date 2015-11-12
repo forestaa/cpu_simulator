@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "sim.h"
-
-int32_t reg[32];
 
 int32_t *regset(char *p)
 {

@@ -77,7 +77,7 @@ void addiu(int32_t *rt, int32_t *rs, int16_t i)
 
 void j(int32_t instr_index)
 {
-  pc += instr_index;
+  pc = instr_index;
 
   return;
 }
@@ -93,7 +93,7 @@ void jal(int32_t instr_index)
 {
   reg[31] = pc + 1; 
 
-  pc += instr_index;
+  pc = instr_index;
   
   return;
 }
@@ -345,6 +345,8 @@ void syscall()
     fscanf(stdin, "%f", &freg[0]);
   else if(reg[2] == 11)
     fprintf(stdout, "%c", reg[4]);
+  else if(reg[2] == 12)
+    fscanf(stdin, "%c", reg[2]);
   else
     fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2]);
 

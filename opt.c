@@ -38,10 +38,11 @@ void getoption(int argc, char *argv[])
     
 void bpoint()
 { 
-  char cmd[20], *p;
-  int i, f = 0;
+  char cmd[20], *p, *q;
+  int i, f = 0, c = 0;
   
   while((stepflag == 1 || breakflag == 1) && pc == breakpoint) {
+    stepflag = 1;
     fprintf(stderr, "this is breakpoint\n");
     fgets(cmd, 20, stdin);
     p = strchr(cmd, '\n');
@@ -74,6 +75,7 @@ void bpoint()
 	    fprintf(stderr, "memory[%d] = %d  0x%08x\n", i, memory[i].i, memory[i].i);
 	} else
 	  fprintf(stderr, "memory does not have that size\n");
+	f = 0;
       } else if(strstr(p, "pc") != NULL) {
 	fprintf(stderr, "pc = %d\n", pc);
       } else if(strchr(p, 'f') != NULL) {
@@ -81,16 +83,25 @@ void bpoint()
 	p++;
 	i = atoi(p);
 	if(i < 32)
-	  fprintf(stderr, "f%-2d = %f\n", i, freg[i]);
+	  fprintf(stderr, "f%-2d = %f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
 	else
 	  fprintf(stderr, "this register does not exist : f%d\n", i);
       } else {
 	p++;
+	if((q = strstr(cmd, "-c")) != NULL) {
+	  c = 1;
+	  q--;
+	  *q = '\0';
+	}
 	i = regnum(p);
-	if(i < 32)
-	  fprintf(stderr, "r%-2d = %d\n", i, reg[i]);
-	else
+	if(i < 32) {
+	  if(c == 1)
+	    fprintf(stderr, "r%-2d = %c  0x%08x\n", i, reg[i], reg[i]);
+	  else
+	    fprintf(stderr, "r%-2d = %d  0x%08x\n", i, reg[i], reg[i]);
+	} else
 	  fprintf(stderr, "this register does not exist : r%d\n", i);
+	c = 0;
       }
     } else if(strstr(cmd, "break") != NULL) {
       p = strchr(cmd, ' ');

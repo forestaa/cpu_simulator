@@ -346,7 +346,7 @@ void syscall()
   else if(reg[2] == 11)
     fprintf(stdout, "%c", reg[4]);
   else if(reg[2] == 12)
-    fscanf(stdin, "%c", reg[2]);
+    fscanf(stdin, "%c", (char *)&reg[2]);
   else
     fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2]);
 

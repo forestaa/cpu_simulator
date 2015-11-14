@@ -17,12 +17,15 @@ int main(int argc, char *argv[])
 {
   FILE *fp;
   int i;
-  uint32_t pm[50000], loadaddr;
+  uint32_t pm[50000];
   int32_t *rs, *rt, *rd, *base, opcode, instr_index;
   float *fs, *ft, *fd;
   int16_t i16, offset;
   uint16_t ui16, sa;
 
+  reg[29] = 1048576;
+  reg[30] = 65536;
+  
   for(i = 0; i < 1048576; i++)
     memory[i].i = 0;
 
@@ -31,11 +34,12 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  fread(&loadaddr,4,1,fp);
-  while(loadaddr != 0x7000003f) {
-    fread(&memory[loadaddr],4,1,fp);
-    fread(&loadaddr,4,1,fp);
+  fread(&memory[reg[30]],4,1,fp);
+  while(memory[reg[30]].i != 0x7000003f) {
+    reg[30]++;
+    fread(&memory[reg[30]],4,1,fp);
   }
+  memory[reg[30]].i = 0;
 
   fread(&pc,4,1,fp);
   fread(pm,4,50000,fp);

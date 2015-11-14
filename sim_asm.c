@@ -6,21 +6,10 @@
 #include "def.h"
 #include "func.h"
 
-typedef struct Assembli_ {
-  int line, arg1, arg2, arg3;
-  char label[30], instr[20], arglabel[30];
-} Assembli;
-
-typedef struct Data_ {
-  char label[10];
-  int addr;
-  Memory value;
-} Data;
-
 int32_t pc = 0, cc, reg[32] = {0};
 float freg[32] = {0};
 Memory memory[1048576] = {0};
-int32_t *regset(char *);
+int regnum(char *);
 
 void bufclear(char *buf)
 {
@@ -38,7 +27,7 @@ int main(int argc, char *argv[])
   int32_t *rs, *rt, *rd, *base, pc = 0, i32, instr_index;
   int16_t i16, offset;
   uint16_t ui16, sa;
-  char *p, buf[6], str[40], programmemory[1000][40], label[1000][40];
+  Assembli program[65535];
   
   if((fp = fopen(argv[1],"r")) == NULL) {
     perror("open error");

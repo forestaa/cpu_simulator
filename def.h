@@ -6,6 +6,12 @@ typedef union Memory_ {
   float f;
 } Memory;
 
+typedef struct Assembli_ {
+  int line, arg1, arg2, arg3, addr;
+  char label[30], instr[20], arglabel[30], comment[30];
+  Memory value;
+} Assembli;
+
 extern int32_t pc, cc, reg[32];
 extern float freg[32];
 extern Memory memory[1048576];

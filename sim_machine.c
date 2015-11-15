@@ -324,119 +324,119 @@ int main(int argc, char *argv[])
       pc++;
       sw_c++;
     } else if(opcode == 0x44000000) {
-      opcode = pm[pc] & 0x0000003f;
-      if(opcode == 0x00000000) {
-	fs = freg + ((pm[pc] >> 16) & 0x0000001f);
-	ft = freg + ((pm[pc] >> 11) & 0x0000001f);
-	fd = freg + ((pm[pc] >> 6) & 0x0000001f);
-	add_s(fd,fs,ft);
+      opcode = pm[pc] & 0x03e00000;
+      if(opcode == 0x01000000) {
+	offset = pm[pc];
 	if(printflag == 1)
-	  fprintf(stderr, "[%d]:add.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
-	pc++;
-	add_s_c++;
-      } else if(opcode == 0x00000001) {
-	fs = freg + ((pm[pc] >> 16) & 0x0000001f);
-	ft = freg + ((pm[pc] >> 11) & 0x0000001f);
-	fd = freg + ((pm[pc] >> 6) & 0x0000001f);
-	sub_s(fd,fs,ft);
-	if(printflag == 1)
-	  fprintf(stderr, "[%d]:sub.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
-	pc++;
-	sub_s_c++;
-      } else if(opcode == 0x00000002) {
-	fs = freg + ((pm[pc] >> 16) & 0x0000001f);
-	ft = freg + ((pm[pc] >> 11) & 0x0000001f);
-	fd = freg + ((pm[pc] >> 6) & 0x0000001f);
-	mul_s(fd,fs,ft);
-	if(printflag == 1)
-	  fprintf(stderr, "[%d]:mul.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
-	pc++;
-	mul_s_c++;
-      } else if(opcode == 0x00000003) {
-	fs = freg + ((pm[pc] >> 16) & 0x0000001f);
-	ft = freg + ((pm[pc] >> 11) & 0x0000001f);
-	fd = freg + ((pm[pc] >> 6) & 0x0000001f);
-	div_s(fd,fs,ft);
-	if(printflag == 1)
-	  fprintf(stderr, "[%d]:div.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
-	pc++;
-	div_s_c++;
-      } else if(opcode == 0x00000006) {
+	  fprintf(stderr, "[%d]:bc1t    %d\n", pc, offset);
+	if(stepflag == 1 && pc == breakpoint - 1) {
+	  bc1t(offset);
+	  breakpoint = pc;
+	} else
+	  bc1t(offset);
+	bc1t_c++;
+      } else if(opcode == 0x00000000) {
 	fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	fd = freg + ((pm[pc] >> 6) & 0x0000001f);
-	mov_s(fd,fs);
+	rt = reg + ((pm[pc] >> 16) & 0x0000001f);
+	mfc1(rt, fs);
 	if(printflag == 1)
-	  fprintf(stderr, "[%d]:mov.s     f%-2ld f%-2ld\n", pc, fd-freg, fs-freg);
+	  fprintf(stderr, "[%d]:mfc1     r%-2ld f%-2ld\n", pc, rt-reg, fs-freg);
 	pc++;
-	mov_s_c++;
-      } else if(opcode == 0x0000000d) {
+	mfc1_c++;
+      } else if(opcode == 0x00800000) {
 	fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	fd = freg + ((pm[pc] >> 6) & 0x0000001f);
-	trunc_w_s(fd, fs);
+	rt = reg + ((pm[pc] >> 16) & 0x0000001f);
+	mtc1(rt, fs);
 	if(printflag == 1)
-	  fprintf(stderr, "[%d]:trunc.s.w f%-2ld f%-2ld\n", pc, fd-freg, fs-freg);
+	  fprintf(stderr, "[%d]:mtc1     r%-2ld f%-2ld\n", pc, rt-reg, fs-freg);
 	pc++;
-	trunc_w_s_c++;
-      } else if(opcode == 0x00000020) {
-	fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	fd = freg + ((pm[pc] >> 6) & 0x0000001f);
-	cvt_s_w(fd, fs);
-	if(printflag == 1)
-	  fprintf(stderr, "[%d]:cvt.s.w   f%-2ld f%-2ld\n", pc, fd-freg, fs-freg);
-	pc++;
-	cvt_s_w_c++;
-      } else if(opcode == 0x00000032) {
-	fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	ft = freg + ((pm[pc] >> 16) & 0x0000001f);
-	c_eq_s(fs, ft);
-	if(printflag == 1)
-	  fprintf(stderr, "[%d]:c.eq.s    f%-2ld f%-2ld\n", pc, fs-freg, ft-freg);
-	pc++;
-	c_eq_s_c++;
-      } else if(opcode == 0x00000034) {
-	fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	ft = freg + ((pm[pc] >> 16) & 0x0000001f);
-	c_olt_s(fs, ft);
-	if(printflag == 1)
-	  fprintf(stderr, "[%d]:c.olt.s   f%-2ld f%-2ld\n", pc, fs-freg, ft-freg);
-	pc++;
-	c_olt_s_c++;
-      } else if(opcode == 0x0000036) {
-	fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	ft = freg + ((pm[pc] >> 16) & 0x0000001f);
-	c_ole_s(fs, ft);
-	if(printflag == 1)
-	  fprintf(stderr, "[%d]:c.ole.s   f%-2ld f%-2ld\n", pc, fs-freg, ft-freg);
-	pc++;
-	c_ole_s_c++;
-      } else {
-	opcode = pm[pc] & 0x03e00000;
-	if(opcode == 0x01000000) {
-	  offset = pm[pc];
-	  if(printflag == 1)
-	    fprintf(stderr, "[%d]:bc1t    %d\n", pc, offset);
-	  if(stepflag == 1 && pc == breakpoint - 1) {
-	    bc1t(offset);
-	    breakpoint = pc;
-	  } else
-	    bc1t(offset);
-	  bc1t_c++;
-	} else if(opcode == 0x00000000) {
-	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	  rt = reg + ((pm[pc] >> 16) & 0x0000001f);
-	  mfc1(rt, fs);
-	  if(printflag == 1)
-	    fprintf(stderr, "[%d]:mfc1     r%-2ld f%-2ld\n", pc, rt-reg, fs-freg);
-	  pc++;
-	  mfc1_c++;
-	} else if(opcode == 0x00800000) {
-	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
-	  rt = reg + ((pm[pc] >> 16) & 0x0000001f);
-	  mtc1(rt, fs);
-	  if(printflag == 1)
-	    fprintf(stderr, "[%d]:mtc1     r%-2ld f%-2ld\n", pc, rt-reg, fs-freg);
-	  pc++;
 	  mtc1_c++;
+      } else { 
+	opcode = pm[pc] & 0x0000003f;
+	if(opcode == 0x00000000) {
+	  fs = freg + ((pm[pc] >> 16) & 0x0000001f);
+	  ft = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  fd = freg + ((pm[pc] >> 6) & 0x0000001f);
+	  add_s(fd,fs,ft);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:add.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
+	  pc++;
+	  add_s_c++;
+	} else if(opcode == 0x00000001) {
+	  fs = freg + ((pm[pc] >> 16) & 0x0000001f);
+	  ft = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  fd = freg + ((pm[pc] >> 6) & 0x0000001f);
+	  sub_s(fd,fs,ft);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:sub.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
+	  pc++;
+	  sub_s_c++;
+	} else if(opcode == 0x00000002) {
+	  fs = freg + ((pm[pc] >> 16) & 0x0000001f);
+	  ft = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  fd = freg + ((pm[pc] >> 6) & 0x0000001f);
+	  mul_s(fd,fs,ft);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:mul.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
+	  pc++;
+	  mul_s_c++;
+	} else if(opcode == 0x00000003) {
+	  fs = freg + ((pm[pc] >> 16) & 0x0000001f);
+	  ft = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  fd = freg + ((pm[pc] >> 6) & 0x0000001f);
+	  div_s(fd,fs,ft);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:div.s     f%-2ld f%-2ld f%-2ld\n", pc, fd-freg, fs-freg, ft-freg);
+	  pc++;
+	  div_s_c++;
+	} else if(opcode == 0x00000006) {
+	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  fd = freg + ((pm[pc] >> 6) & 0x0000001f);
+	  mov_s(fd,fs);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:mov.s     f%-2ld f%-2ld\n", pc, fd-freg, fs-freg);
+	  pc++;
+	  mov_s_c++;
+	} else if(opcode == 0x0000000d) {
+	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  fd = freg + ((pm[pc] >> 6) & 0x0000001f);
+	  trunc_w_s(fd, fs);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:trunc.s.w f%-2ld f%-2ld\n", pc, fd-freg, fs-freg);
+	  pc++;
+	  trunc_w_s_c++;
+	} else if(opcode == 0x00000020) {
+	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  fd = freg + ((pm[pc] >> 6) & 0x0000001f);
+	  cvt_s_w(fd, fs);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:cvt.s.w   f%-2ld f%-2ld\n", pc, fd-freg, fs-freg);
+	  pc++;
+	  cvt_s_w_c++;
+	} else if(opcode == 0x00000032) {
+	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  ft = freg + ((pm[pc] >> 16) & 0x0000001f);
+	  c_eq_s(fs, ft);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:c.eq.s    f%-2ld f%-2ld\n", pc, fs-freg, ft-freg);
+	  pc++;
+	  c_eq_s_c++;
+	} else if(opcode == 0x00000034) {
+	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  ft = freg + ((pm[pc] >> 16) & 0x0000001f);
+	  c_olt_s(fs, ft);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:c.olt.s   f%-2ld f%-2ld\n", pc, fs-freg, ft-freg);
+	  pc++;
+	  c_olt_s_c++;
+	} else if(opcode == 0x0000036) {
+	  fs = freg + ((pm[pc] >> 11) & 0x0000001f);
+	  ft = freg + ((pm[pc] >> 16) & 0x0000001f);
+	  c_ole_s(fs, ft);
+	  if(printflag == 1)
+	    fprintf(stderr, "[%d]:c.ole.s   f%-2ld f%-2ld\n", pc, fs-freg, ft-freg);
+	  pc++;
+	  c_ole_s_c++;
 	} else {
 	  fprintf(stderr, "this instruction is not defined : [%d]:0x%08x\n", pc, pm[pc]);
 	  pc++;

@@ -37,10 +37,12 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  fread(&memory[reg[30]],4,1,fp);
-  while(memory[reg[30]].ui != 0x7000003f) {
+  i = reg[30];
+  fread(&memory[i],4,1,fp);
+  while(memory[i].ui != 0x7000003f) {
     reg[30]++;
-    fread(&memory[reg[30]],4,1,fp);
+    i = reg[30];
+    fread(&memory[i],4,1,fp);
   }
   memory[reg[30]].ui = 0;
 

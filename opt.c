@@ -36,15 +36,15 @@ void getoption(int argc, char *argv[])
   return;
 }
     
-void bpoint()
+void bpoint(uint32_t instr)
 { 
-  char cmd[20], *p, *q;
+  char cmd[30], *p, *q;
   int i, f = 0, c = 0;
   
   while((stepflag == 1 || breakflag == 1) && pc == breakpoint) {
     stepflag = 1;
     fprintf(stderr, "this is breakpoint\n");
-    fgets(cmd, 20, stdin);
+    fgets(cmd, 30, stdin);
     p = strchr(cmd, '\n');
     *p = '\0';
     if(strcmp(cmd, "step") == 0 || strcmp(cmd, "\0") == 0)
@@ -60,6 +60,8 @@ void bpoint()
 	  fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i], reg[i]);
 	for(i = 0; i < 32; i++)
 	  fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
+      } else if(strstr(p, "instr") != NULL) {
+	fprintf(stderr, "instr = 0x%08x\n", instr);
       } else if(strstr(p, "memory") != NULL) {
 	if(strstr(cmd, "-f") != NULL)
 	  f = 1;

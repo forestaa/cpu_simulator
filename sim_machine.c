@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <sys/time.h>
 #include "def.h"
 #include "func.h"
 
@@ -22,6 +23,8 @@ int main(int argc, char *argv[])
   float *fs, *ft, *fd;
   int16_t i16, offset;
   uint16_t ui16, sa;
+  struct timeval tv0,tv1;
+  double time;
 
   reg[29] = 1048576;
   reg[30] = 65536;
@@ -35,11 +38,11 @@ int main(int argc, char *argv[])
   }
 
   fread(&memory[reg[30]],4,1,fp);
-  while(memory[reg[30]].i != 0x7000003f) {
+  while(memory[reg[30]].ui != 0x7000003f) {
     reg[30]++;
     fread(&memory[reg[30]],4,1,fp);
   }
-  memory[reg[30]].i = 0;
+  memory[reg[30]].ui = 0;
 
   fread(&pc,4,1,fp);
   fread(pm,4,50000,fp);
@@ -56,8 +59,10 @@ int main(int argc, char *argv[])
     }
   }
 
+  gettimeofday(&tv0, NULL);
+
   while(pc < 50000) {
-    bpoint();
+    bpoint(pm[pc]);
 
     opcode = pm[pc] & 0xfc000000;
     if(pm[pc] == 0xffffffff) {
@@ -461,7 +466,12 @@ int main(int argc, char *argv[])
     }
     instr_c++;
   }
+
+  gettimeofday(&tv1, NULL);
+  time = (double)(tv1.tv_sec - tv0.tv_sec + (tv1.tv_usec - tv0.tv_usec)*0.001*0.001);
   
   print_status();
+
+  fprintf(stderr, "time = %lf\n", time);
   return 0;
 }

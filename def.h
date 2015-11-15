@@ -3,14 +3,21 @@
 
 typedef union Memory_ {
   int i;
+  uint32_t ui;
   float f;
 } Memory;
 
-typedef struct Assembli_ {
-  int line, arg1, arg2, arg3, addr;
+typedef struct Program_ {
+  int line, arg1, arg2, arg3;
   char label[30], instr[20], arglabel[30], comment[30];
+} Program;
+
+typedef struct Data_ {
+  int line, addr;
+  char label[30];
   Memory value;
-} Assembli;
+  struct Data_ *next;
+} Data;
 
 extern int32_t pc, cc, reg[32];
 extern float freg[32];

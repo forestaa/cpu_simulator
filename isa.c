@@ -328,7 +328,7 @@ void cvt_s_w(float *fd, float *fs)
 
 void trunc_w_s(float *fd, float *fs)
 {
-  *fd = (int32_t)*fs;
+  *(int32_t *)fd = (int32_t)*fs;
 
   return;
 }

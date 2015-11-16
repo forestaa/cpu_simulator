@@ -13,7 +13,7 @@ int stepflag = 0, breakflag = 0, breakpoint, printflag = 0;
 int32_t pc = 0, cc = 0;
 Value reg[32], freg[32], memory[1048576];
 
-void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
+static inline void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
 {
   if(fread(ptr, size, nmemb, fp) == 0) {
     perror("cannot read\n");

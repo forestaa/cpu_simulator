@@ -1,7 +1,7 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -O3 -Wall
 SRCS1 = isa.c regset_asm.c
-SRCS2 = isa.c print.c opt.c regnum.c
+SRCS2 = isa.c print.c opt.c regnum.c fadd.c
 OBJS1 = $(SRCS1:.c=.o)
 OBJS2 = $(SRCS2:.c=.o)
 

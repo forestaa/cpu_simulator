@@ -2,75 +2,84 @@
 #include <stdint.h>
 #include "def.h"
 
-void add(int32_t *rd, int32_t *rs, int32_t *rt)
+static inline void receive_data(FILE *stream, const char *format, void *ptr)
 {
-  *rd = *rs + *rt;
+  if(fscanf(stream, format, ptr) == 0) {
+    perror("receive error\n");
+  }
+
+  return;
+}
+
+void add(int rd, int rs, int rt)
+{
+  reg[rd].i = reg[rs].i + reg[rt].i;
   
   return;
 }
 
-void sub(int32_t *rd, int32_t *rs, int32_t *rt)
+void sub(int rd, int rs, int rt)
 {
-  *rd = *rs - *rt;
+  reg[rd].i = reg[rs].i - reg[rt].i;
 
   return;
 }
 
-void slt(int32_t *rd, int32_t *rs, int32_t *rt)
+void slt(int rd, int rs, int rt)
 {
-  if(*rs < *rt)
-    *rd = 1;
+  if(reg[rs].i < reg[rt].i)
+    reg[rd].i = 1;
   else
-    *rd = 0;
+    reg[rd].i = 0;
 
   return;
 }
 
-void and(int32_t *rd, int32_t *rs, int32_t *rt)
-  {
-  *rd = *rs & *rt;
-
-  return;
-}
-
-void or(int32_t *rd, int32_t *rs, int32_t *rt)
+void and(int rd, int rs, int rt)
 {
-  *rd = *rs | *rt;
+  reg[rd].i = reg[rs].i & reg[rt].i;
 
   return;
 }
 
-void xor(int32_t *rd, int32_t *rs, int32_t *rt)
+void or(int rd, int rs, int rt)
 {
-  *rd = *rs ^ *rt;
+  reg[rd].i = reg[rs].i | reg[rt].i;
 
   return;
 }
 
-void sll(int32_t *rd, int32_t *rt, uint16_t sa)
+void xor(int rd, int rs, int rt)
 {
-  *rd = *rt << sa;
+  reg[rd].i = reg[rs].i ^ reg[rt].i;
 
   return;
 }
 
-void srl(int32_t *rd, int32_t *rt, uint16_t sa)
+void sll(int rd, int rt, uint16_t sa)
 {
-  *rd = (uint32_t)*rt >> sa;
+  reg[rd].i = reg[rt].i << sa;
 
   return;
 }
 
-void addi(int32_t *rt, int32_t *rs, int16_t i)
+void srl(int rd, int rt, uint16_t sa)
 {
-  *rt = *rs + i;
+  reg[rd].ui = reg[rt].ui >> sa;
 
   return;
 }
 
-void addiu(int32_t *rt, int32_t *rs, int16_t i)
+void addi(int rt, int rs, int16_t i)
 {
-  *rt = *rs + i;
+  reg[rt].i = reg[rs].i + i;
+
+  return;
+}
+
+void addiu(int rt, int rs, int16_t i)
+{
+  reg[rt].i = reg[rs].i + i;
 
   return;
 }
@@ -82,33 +91,33 @@ void j(int32_t instr_index)
   return;
 }
 
-void jr(int32_t *rs)
+void jr(int rs)
 {
-  pc = *rs;
+  pc = reg[rs].i;
   
   return;
 }
 
 void jal(int32_t instr_index)
 {
-  reg[31] = pc + 1; 
+  reg[31].i = pc + 1; 
 
   pc = instr_index;
   
   return;
 }
 
-void jalr(int32_t *rd, int32_t *rs)
+void jalr(int rd, int rs)
 {
-  *rd = pc + 1;
+  reg[rd].i = pc + 1;
 
-  pc = *rs;
+  pc = reg[rs].i;
   return;
 }
 
-void beq(int32_t *rs, int32_t *rt, int16_t offset)
+void beq(int rs, int rt, int16_t offset)
 {
-  if(*rs == *rt)
+  if(reg[rs].i == reg[rt].i)
     pc += offset;
   else
     pc++;
@@ -116,9 +125,9 @@ void beq(int32_t *rs, int32_t *rt, int16_t offset)
   return;
 }
 
-void bne(int32_t *rs, int32_t *rt, int16_t offset)
+void bne(int rs, int rt, int16_t offset)
 {
-  if(*rs != *rt)
+  if(reg[rs].i != reg[rt].i)
     pc += offset;
   else
     pc++;
@@ -126,9 +135,9 @@ void bne(int32_t *rs, int32_t *rt, int16_t offset)
   return;
 }
 
-void blez(int32_t *rs, int16_t offset)
+void blez(int rs, int16_t offset)
 {
-  if(*rs <= 0)
+  if(reg[rs].i <= 0)
     pc += offset;
   else
     pc++;
@@ -136,9 +145,9 @@ void blez(int32_t *rs, int16_t offset)
   return;
 }
 
-void bgez(int32_t *rs, int16_t offset)
+void bgez(int rs, int16_t offset)
 {
-  if(*rs >= 0)
+  if(reg[rs].i >= 0)
     pc += offset;
   else
     pc++;
@@ -146,9 +155,9 @@ void bgez(int32_t *rs, int16_t offset)
   return;
 }
 
-void bgtz(int32_t *rs, int16_t offset)
+void bgtz(int rs, int16_t offset)
 {
-  if(*rs > 0)
+  if(reg[rs].i > 0)
     pc += offset;
   else
     pc++;
@@ -156,9 +165,9 @@ void bgtz(int32_t *rs, int16_t offset)
   return;
 }
 
-void bltz(int32_t *rs, int16_t offset)
+void bltz(int rs, int16_t offset)
 {
-  if(*rs < 0)
+  if(reg[rs].i < 0)
     pc += offset;
   else
     pc++;
@@ -166,94 +175,81 @@ void bltz(int32_t *rs, int16_t offset)
   return;
 }
 
-void lui(int32_t *rt, int16_t i)
+void lui(int rt, int16_t i)
 {
   int32_t j = i;
 
-  *rt = j << 16;
+  reg[rt].i = j << 16;
 
   return;
 }
 
-void ori(int32_t *rt, int32_t *rs, uint16_t ui)
+void ori(int rt, int rs, uint16_t ui)
 {
   uint32_t i = ui;
 
-  *rt = *rs | i;
+  reg[rt].i = reg[rs].i | i;
 
   return;
 }
 
-void li(int32_t *rd, int32_t i)
+void sw(int rt, int16_t offset, int base)
 {
-  int16_t j = i >> 16;
-  uint16_t ui = i;
+  int i = reg[base].i + offset;
 
-  lui(rd, j);
-  ori(rd, rd, ui);
-
-  return;
-}
-
-void move(int32_t *rd, int32_t *rs)
-{
-  or(rd, rs, reg);
-
-  return;
-}
-
-void sw(int32_t *rt, int16_t offset, int32_t *base)
-{
-  memory[*base + offset].i = *rt;
+  memory[i].i = reg[rt].i;
 
   return;
 } 
 
-void lw(int32_t *rt, int16_t offset, int32_t *base)
+void lw(int rt, int16_t offset, int base)
 {
-  *rt = memory[*base + offset].i;
+  int i = reg[base].i + offset;
+
+  reg[rt].i = memory[i].i;
 
   return;
 }
 
-void add_s(float *fd, float *fs, float *ft)
+uint32_t fadd(uint32_t, uint32_t);
+void add_s(int fd, int fs, int ft)
 {
-  *fd = *fs + *ft;
+  freg[fd].f = fadd(freg[fs].ui, freg[ft].ui);
 
   return;
 }
 
-void sub_s(float *fd, float *fs, float *ft)
+void sub_s(int fd, int fs, int ft)
 {
-  *fd = *fs - *ft;
+  freg[fd].f = freg[fs].f - freg[ft].f;
 
   return;
 }
 
-void mul_s(float *fd, float *fs, float *ft)
+void mul_s(int fd, int fs, int ft)
 {
-  *fd = *fs * *ft;
+  freg[fd].f = freg[fs].f * freg[ft].f;
 
   return;
 }
 
-void div_s(float *fd, float *fs, float *ft)
+void div_s(int fd, int fs, int ft)
 {
-  *fd = *fs / *ft;
+  freg[fd].f = freg[fs].f / freg[ft].f;
 
   return;
 }
 
-void mov_s(float *fd, float *fs)
+void mov_s(int fd, int fs)
 {
-  *fd = *fs;
+  freg[fd].f = freg[fs].f;
 
   return;
 }
 
-void c_eq_s(float *fs, float *ft)
+void c_eq_s(int fs, int ft)
 {
-  if(*fs == *ft)
+  if(freg[fs].f == freg[ft].f)
     cc = 1;
   else
     cc = 0;
@@ -261,9 +257,9 @@ void c_eq_s(float *fs, float *ft)
   return;
 }
 
-void c_olt_s(float *fs, float *ft)
+void c_olt_s(int fs, int ft)
 {
-  if(*fs < *ft)
+  if(freg[fs].f < freg[ft].f)
     cc = 1;
   else
     cc = 0;
@@ -271,9 +267,9 @@ void c_olt_s(float *fs, float *ft)
   return;
 }
 
-void c_ole_s(float *fs, float *ft)
+void c_ole_s(int fs, int ft)
 {
-  if(*fs <= *ft)
+  if(freg[fs].f <= freg[ft].f)
     cc = 1;
   else
     cc = 0;
@@ -291,64 +287,68 @@ void bc1t(int16_t offset)
   return;
 }
 
-void swc1(float *ft, int16_t offset, int32_t *base)
+void swc1(int ft, int16_t offset, int base)
 {
-  memory[*base + offset].f = *ft;
+  int i = reg[base].i + offset;
+
+  memory[i].f = freg[ft].f;
 
   return;
 }
 
-void lwc1(float *ft, int16_t offset, int32_t *base)
+void lwc1(int ft, int16_t offset, int base)
 {
-  *ft = memory[*base + offset].f;
+  int i = reg[base].i + offset;
+
+  freg[ft].f = memory[i].f;
 
   return;
 }
 
-void mfc1(int32_t *rd, float *fs)
+void mfc1(int rd, int fs)
 {
-  *rd = *(int32_t *)fs;
+  reg[rd].i = freg[fs].i;
 
   return;
 }
 
-void mtc1(int32_t *rt, float *fs)
+void mtc1(int rt, int fs)
 {
-  *fs = *(float *)rt;
+  freg[fs].f = reg[rt].f;
 
   return;
 }
 
-void cvt_s_w(float *fd, float *fs)
+void cvt_s_w(int fd, int fs)
 {
-  *fd = *(int32_t *)fs;
+  freg[fd].f = freg[fs].i;
 
   return;
 }
 
-void trunc_w_s(float *fd, float *fs)
+void trunc_w_s(int fd, int fs)
 {
-  *(int32_t *)fd = (int32_t)*fs;
+  freg[fd].i = freg[fs].f;
 
   return;
 }
 
 void syscall()
 {
-  if(reg[2] == 1)
-    fprintf(stdout, "%d", reg[4]);
-  else if(reg[2] == 2)
-    fprintf(stdout, "%f", freg[12]);
-  else if(reg[2] == 5)
-    fscanf(stdin, "%d", &reg[2]);
-  else if(reg[2] == 6)
-    fscanf(stdin, "%f", &freg[0]);
-  else if(reg[2] == 11)
-    fprintf(stdout, "%c", reg[4]);
-  else if(reg[2] == 12)
-    fscanf(stdin, "%c", (char *)&reg[2]);
+  if(reg[2].i == 1)
+    fprintf(stdout, "%d", reg[4].i);
+  else if(reg[2].i == 2)
+    fprintf(stdout, "%f", freg[12].f);
+  else if(reg[2].i == 5)
+    receive_data(stdin, "%d", &reg[2].i);
+  else if(reg[2].i == 6)
+    receive_data(stdin, "%f", &freg[0].f);
+  else if(reg[2].i == 11)
+    fprintf(stdout, "%c", reg[4].c);
+  else if(reg[2].i == 12)
+    receive_data(stdin, "%c", &reg[2]);
   else
-    fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2]);
+    fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2].ui);
 
   return;
 }

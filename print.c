@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdarg.h>
+#include <string.h>
 #include "def.h"
 
 void print_status()
@@ -50,9 +52,75 @@ void print_status()
   fprintf(stderr, "syscall     : %d\n", syscall_c);
     
   for(i = 0; i < 32; i++)
-    fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i], reg[i]);
+    fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i].i, reg[i].ui);
  
   for(i = 0; i < 32; i++)
-    fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
+    fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i].f, freg[i].ui);
 
+}
+
+char *regname(int);
+void print_instr(const char *instr, ...)
+{
+  int arg1, arg2, arg3;
+  va_list args;
+
+  va_start(args, instr);
+
+  if(strcmp(instr, "syscall") == 0)
+    fprintf(stderr, "[%4d]:%s   $v0 = %d\n", pc, instr, reg[2].i);
+  else if(strcmp(instr, "j") == 0 || strcmp(instr, "jal") == 0 || strcmp(instr, "bc1t") == 0) {
+    arg1 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %d\n", pc, instr, arg1);
+  } else if(strcmp(instr, "jr") == 0) {
+    arg1 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %s\n", pc, instr, regname(arg1));
+  } else if(strcmp(instr, "blez") == 0 || strcmp(instr, "bgez") == 0 || strcmp(instr, "bltz") == 0 || strcmp(instr, "bgtz") == 0 || strcmp(instr, "lui") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %s %d\n", pc, instr, regname(arg1), arg2);
+  } else if(strcmp(instr, "mfc1") == 0 || strcmp(instr, "mfc1") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %s $f%d\n", pc, instr, regname(arg1), arg2);
+  } else if(strcmp(instr, "jalr") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %s %s\n", pc, instr, regname(arg1), regname(arg2));
+  } else if(strcmp(instr, "sll") == 0 || strcmp(instr, "srl") == 0 || strcmp(instr, "addi") == 0 || strcmp(instr, "addiu") == 0 || strcmp(instr, "beq") == 0 || strcmp(instr, "bne") == 0 || strcmp(instr, "ori") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    arg3 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %s %s %d\n", pc, instr, regname(arg1), regname(arg2), arg3);
+  } else if(strcmp(instr, "lw") == 0 || strcmp(instr, "sw") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    arg3 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %s %d(%s)\n", pc, instr, regname(arg1), arg2, regname(arg3));
+  } else if(strcmp(instr, "lwc1") == 0 || strcmp(instr, "swc1") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    arg3 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s $f%-2d %d(%s)\n", pc, instr, arg1, arg2, regname(arg3));
+  } else if(strcmp(instr, "add") == 0 || strcmp(instr, "sub") == 0 || strcmp(instr, "slt") == 0 || strcmp(instr, "and") == 0 || strcmp(instr, "or") == 0 || strcmp(instr, "xor") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    arg3 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s %s %s %s\n", pc, instr, regname(arg1), regname(arg2), regname(arg3));
+  } else if(strcmp(instr, "mov.s") == 0 || strcmp(instr, "trunc.w.s") == 0 || strcmp(instr, "cvt.s.w") == 0 || strcmp(instr, "c.eq.s") == 0 || strcmp(instr, "c.olt.s") == 0 || strcmp(instr, "c.ole.s") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s $f%-2d $f%d\n", pc, instr, arg1, arg2);
+  } else if(strcmp(instr, "add.s") == 0 || strcmp(instr, "sub.s") == 0 || strcmp(instr, "mul.s") == 0 || strcmp(instr, "div.s") == 0) {
+    arg1 = va_arg(args, int);
+    arg2 = va_arg(args, int);
+    arg3 = va_arg(args, int);
+    fprintf(stderr, "[%4d]:%-10s $f%-2d $f%-2d $f%d\n", pc, instr, arg1, arg2, arg3);
+  } else {
+    fprintf(stderr, "[%4d]: printbug %s\n", pc, instr);
+  }
+  
+  va_end(args);
+  
+  return;
 }

@@ -1,53 +1,51 @@
 #ifndef __FUNC_H__
 #define __FUNC_H__
 
-void add(int32_t *, int32_t *, int32_t *);
-void addi(int32_t *, int32_t *, int16_t);
-void addiu(int32_t *, int32_t *, int16_t);
-void sub(int32_t *, int32_t *, int32_t *);
-void slt(int32_t *, int32_t *, int32_t *);
-void and(int32_t *, int32_t *, int32_t *);
-void or(int32_t *, int32_t *, int32_t *);
-void ori(int32_t *, int32_t *, uint16_t);
-void xor(int32_t *, int32_t *, int32_t *);
-void sll(int32_t *, int32_t *, uint16_t);
-void srl(int32_t *, int32_t *, uint16_t);
+void add(int, int, int);
+void addi(int, int, int16_t);
+void addiu(int, int, int16_t);
+void sub(int, int, int);
+void slt(int, int, int);
+void and(int, int, int);
+void or(int, int, int);
+void ori(int, int, uint16_t);
+void xor(int, int, int);
+void sll(int, int, uint16_t);
+void srl(int, int, uint16_t);
 void j(int32_t);
-void jr(int32_t *);
+void jr(int);
 void jal(int32_t);
-void jalr(int32_t *, int32_t *);
-void beq(int32_t *, int32_t *, int16_t);
-void bne(int32_t *, int32_t *, int16_t);
-void blez(int32_t *, int16_t);
-void bgez(int32_t *, int16_t);
-void bltz(int32_t *, int16_t);
-void bgtz(int32_t *, int16_t);
-void lui(int32_t *, int16_t);
-void li(int32_t *, int32_t);
-void move(int32_t *, int32_t *);
-void sw(int32_t *, int16_t, int32_t *);
-void lw(int32_t *, int16_t, int32_t *);
+void jalr(int, int);
+void beq(int, int, int16_t);
+void bne(int, int, int16_t);
+void blez(int, int16_t);
+void bgez(int, int16_t);
+void bltz(int, int16_t);
+void bgtz(int, int16_t);
+void lui(int, int16_t);
+void sw(int, int16_t, int);
+void lw(int, int16_t, int);
 
-void add_s(float *, float *, float *);
-void sub_s(float *, float *, float *);
-void mul_s(float *, float *, float *);
-void div_s(float *, float *, float *);
-void mov_s(float *, float *);
-void c_eq_s(float *, float *);
-void c_olt_s(float *, float *);
-void c_ole_s(float *, float *);
-int32_t bc1t(int16_t);
-void swc1(float *, int16_t, int32_t *);
-void lwc1(float *, int16_t, int32_t *);
-void mfc1(int32_t *, float *);
-void mtc1(int32_t *, float *);
-void cvt_s_w(float *, float *);
-void trunc_w_s(float *, float *);
+void add_s(int, int, int);
+void sub_s(int, int, int);
+void mul_s(int, int, int);
+void div_s(int, int, int);
+void mov_s(int, int);
+void c_eq_s(int, int);
+void c_olt_s(int, int);
+void c_ole_s(int, int);
+void bc1t(int16_t);
+void swc1(int, int16_t, int);
+void lwc1(int, int16_t, int);
+void mfc1(int, int);
+void mtc1(int, int);
+void cvt_s_w(int, int);
+void trunc_w_s(int, int);
 
 void syscall();
 
 void getoption(int, char **);
-void bpoint();
+void bpoint(uint32_t);
 void print_status();
-
+void print_instr(const char *, ...);
 #endif

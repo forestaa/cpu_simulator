@@ -69,3 +69,73 @@ int regnum(char *buf)
   else
     return 32;
 }
+
+char *regname(int i)
+{
+  if(i == 0)
+    return "$zero";
+  else if(i == 1)
+    return "$at";
+  else if(i == 2)
+    return "$v0";
+  else if(i == 3)
+    return "$v1";
+  else if(i == 4)
+    return "$a0";
+  else if(i == 5)
+    return "$a1";
+  else if(i == 6)
+    return "$a2";
+  else if(i == 7)
+    return "$a3";
+  else if(i == 8)
+    return "$t0";
+  else if(i == 9)
+    return "$t1";
+  else if(i == 10)
+    return "$t2";
+  else if(i == 11)
+    return "$t3";
+  else if(i == 12)
+    return "$t4";
+  else if(i == 13)
+    return "$t5";
+  else if(i == 14)
+    return "$t6";
+  else if(i == 15)
+    return "$t7";
+  else if(i == 16)
+    return "$s0";
+  else if(i == 17)
+    return "$s1";
+  else if(i == 18)
+    return "$s2";
+  else if(i == 19)
+    return "$s3";
+  else if(i == 20)
+    return "$s4";
+  else if(i == 21)
+    return "$s5";
+  else if(i == 22)
+    return "$s6";
+  else if(i == 23)
+    return "$s7";
+  else if(i == 24)
+    return "$t8";
+  else if(i == 25)
+    return "$t9";
+  else if(i == 26)
+    return "$k0";
+  else if(i == 27)
+    return "$k1";
+  else if(i == 28)
+    return "$gp";
+  else if(i == 29)
+    return "$sp";
+  else if(i == 30)
+    return "$hp";
+  else if(i == 31)
+    return "$ra";
+  else
+    return "unknown regsiter";
+}

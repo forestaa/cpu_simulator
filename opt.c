@@ -44,7 +44,9 @@ void bpoint(uint32_t instr)
   while((stepflag == 1 || breakflag == 1) && pc == breakpoint) {
     stepflag = 1;
     fprintf(stderr, "this is breakpoint\n");
-    fgets(cmd, 30, stdin);
+    if(fgets(cmd, 30, stdin) == NULL) {
+      perror("no commands");
+    }
     p = strchr(cmd, '\n');
     *p = '\0';
     if(strcmp(cmd, "step") == 0 || strcmp(cmd, "\0") == 0)
@@ -57,9 +59,9 @@ void bpoint(uint32_t instr)
       p = strchr(cmd, ' ');
       if(strstr(p, "all") != NULL) {
 	for(i = 0; i < 32; i++)
-	  fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i], reg[i]);
+	  fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i].i, reg[i].ui);
 	for(i = 0; i < 32; i++)
-	  fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
+	  fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i].f, freg[i].ui);
       } else if(strstr(p, "instr") != NULL) {
 	fprintf(stderr, "instr = 0x%08x\n", instr);
       } else if(strstr(p, "memory") != NULL) {
@@ -85,7 +87,7 @@ void bpoint(uint32_t instr)
 	p++;
 	i = atoi(p);
 	if(i < 32)
-	  fprintf(stderr, "f%-2d = %f  0x%08x\n", i, freg[i], *(uint32_t *)&freg[i]);
+	  fprintf(stderr, "f%-2d = %f  0x%08x\n", i, freg[i].f, freg[i].ui);
 	else
 	  fprintf(stderr, "this register does not exist : f%d\n", i);
       } else {
@@ -98,9 +100,9 @@ void bpoint(uint32_t instr)
 	i = regnum(p);
 	if(i < 32) {
 	  if(c == 1)
-	    fprintf(stderr, "r%-2d = %c  0x%08x\n", i, reg[i], reg[i]);
+	    fprintf(stderr, "r%-2d = %c  0x%08x\n", i, reg[i].i, reg[i].ui);
 	  else
-	    fprintf(stderr, "r%-2d = %d  0x%08x\n", i, reg[i], reg[i]);
+	    fprintf(stderr, "r%-2d = %d  0x%08x\n", i, reg[i].i, reg[i].ui);
 	} else
 	  fprintf(stderr, "this register does not exist : r%d\n", i);
 	c = 0;

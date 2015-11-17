@@ -16,7 +16,8 @@ void print_status()
   fprintf(stderr, "or          : %d\n", or_c);
   fprintf(stderr, "xor         : %d\n", xor_c); 
   fprintf(stderr, "sll         : %d\n", sll_c); 
-  fprintf(stderr, "srl         : %d\n", srl_c); 
+  fprintf(stderr, "srl         : %d\n", srl_c);
+  fprintf(stderr, "sllv        : %d\n", sllv_c);
   fprintf(stderr, "addi        : %d\n", addi_c); 
   fprintf(stderr, "addiu       : %d\n", addiu_c); 
   fprintf(stderr, "j           : %d\n", j_c);  
@@ -102,7 +103,7 @@ void print_instr(const char *instr, ...)
     arg2 = va_arg(args, int);
     arg3 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s $f%-2d %d(%s)\n", pc, instr, arg1, arg2, regname(arg3));
-  } else if(strcmp(instr, "add") == 0 || strcmp(instr, "sub") == 0 || strcmp(instr, "slt") == 0 || strcmp(instr, "and") == 0 || strcmp(instr, "or") == 0 || strcmp(instr, "xor") == 0) {
+  } else if(strcmp(instr, "add") == 0 || strcmp(instr, "sub") == 0 || strcmp(instr, "slt") == 0 || strcmp(instr, "and") == 0 || strcmp(instr, "or") == 0 || strcmp(instr, "xor") == 0 || strcmp(instr, "sllv") == 0) {
     arg1 = va_arg(args, int);
     arg2 = va_arg(args, int);
     arg3 = va_arg(args, int);

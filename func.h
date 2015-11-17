@@ -11,6 +11,7 @@ void or(int, int, int);
 void ori(int, int, uint16_t);
 void xor(int, int, int);
 void sll(int, int, uint16_t);
+void sllv(int, int, int);
 void srl(int, int, uint16_t);
 void j(int32_t);
 void jr(int);

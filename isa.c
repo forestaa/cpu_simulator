@@ -63,6 +63,13 @@ void sll(int rd, int rt, uint16_t sa)
   return;
 }
 
+void sllv(int rd, int rt, int rs)
+{
+  reg[rd].i = reg[rt].i << reg[rs].i;
+
+  return;
+}
+
 void srl(int rd, int rt, uint16_t sa)
 {
   reg[rd].ui = reg[rt].ui >> sa;

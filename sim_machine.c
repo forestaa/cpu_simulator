@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     freg[i].i = 0;
   }
 
-  reg[29].i = 1048576;
+  reg[29].i = 1048575;
   reg[30].i = 65536;
   
   for(i = 0; i < 1048576; i++)
@@ -336,7 +336,7 @@ int main(int argc, char *argv[])
       offset = pm[pc];
       if(printflag == 1)
 	print_instr("sw", rt, offset, base);
-      sw(rt,offset,base);;
+      sw(rt,offset,base);
       pc++;
       sw_c++;
     } else if(opcode == 0x44000000) {

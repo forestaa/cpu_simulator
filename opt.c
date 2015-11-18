@@ -43,7 +43,7 @@ void bpoint(uint32_t instr)
   
   while((stepflag == 1 || breakflag == 1) && pc == breakpoint) {
     stepflag = 1;
-    fprintf(stderr, "this is breakpoint\n");
+    fprintf(stderr, ">");
     if(fgets(cmd, 30, stdin) == NULL) {
       perror("no commands");
     }

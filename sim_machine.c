@@ -12,6 +12,7 @@ int c_eq_s_c = 0, c_olt_s_c = 0, c_ole_s_c = 0, bc1t_c = 0, swc1_c = 0, lwc1_c =
 int stepflag = 0, breakflag = 0, breakpoint, printflag = 0;
 int32_t pc = 0, cc = 0;
 Value reg[32], freg[32], memory[1048576];
+FILE *fpin, *fpout;
 
 static inline void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
 {
@@ -33,6 +34,9 @@ int main(int argc, char *argv[])
   uint16_t ui16, sa;
   struct timeval tv0,tv1;
   double time;
+
+  fpin = stdin;
+  fpout = stdout;
 
   for(i = 0; i < 32; i++) {
     reg[i].i = 0;
@@ -496,6 +500,9 @@ int main(int argc, char *argv[])
   time = (double)(tv1.tv_sec - tv0.tv_sec + (tv1.tv_usec - tv0.tv_usec)*0.001*0.001);
   
   print_status();
+  
+  fclose(fpin);
+  fclose(fpout);
 
   fprintf(stderr, "time = %lf\n", time);
   return 0;

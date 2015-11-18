@@ -2,6 +2,15 @@
 #include <stdint.h>
 #include "def.h"
 
+static inline void receive_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+  if(fread(ptr, size, nmemb, stream) == 0)
+    perror("receive errer\n");
+
+  return;
+}
+
+/*
 static inline void receive_data(FILE *stream, const char *format, void *ptr)
 {
   if(fscanf(stream, format, ptr) == 0) {
@@ -10,7 +19,7 @@ static inline void receive_data(FILE *stream, const char *format, void *ptr)
 
   return;
 }
-
+*/
 void add(int rd, int rs, int rt)
 {
   reg[rd].i = reg[rs].i + reg[rt].i;
@@ -344,17 +353,20 @@ void trunc_w_s(int fd, int fs)
 void syscall()
 {
   if(reg[2].i == 1)
-    fprintf(stdout, "%d", reg[4].i);
+    fprintf(fpout, "%d", reg[4].i);
   else if(reg[2].i == 2)
-    fprintf(stdout, "%f", freg[12].f);
+    fprintf(fpout, "%f", freg[12].f);
   else if(reg[2].i == 5)
-    receive_data(stdin, "%d", &reg[2].i);
+    receive_data(&reg[2], 4, 1, fpin);
+    //receive_data(stdin, "%d", &reg[2].i);
   else if(reg[2].i == 6)
-    receive_data(stdin, "%f", &freg[0].f);
+    receive_data(&freg[0], 4, 1, fpin);
+    //receive_data(stdin, "%f", &freg[0].f);
   else if(reg[2].i == 11)
-    fprintf(stdout, "%c", reg[4].c);
+    fprintf(fpout, "%c", reg[4].c);
   else if(reg[2].i == 12)
-    receive_data(stdin, "%c", &reg[2]);
+    receive_data(&reg[2], 1, 1, fpin);
+    //receive_data(stdin, "%c", &reg[2]);
   else
     fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2].ui);
 

@@ -221,7 +221,8 @@ void lw(int rt, int16_t offset, int base)
 uint32_t fadd(uint32_t, uint32_t);
 void add_s(int fd, int fs, int ft)
 {
-  freg[fd].f = fadd(freg[fs].ui, freg[ft].ui);
+  freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
+  //freg[fd].f = freg[fs].f + freg[ft].f;
 
   return;
 }

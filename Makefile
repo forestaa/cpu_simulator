@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -O3 -Wall
 SRCS = isa.c print.c opt.c regnum.c fadd.c
 OBJS = $(SRCS:.c=.o)
 

@@ -17,7 +17,6 @@ void getoption(int argc, char *argv[])
       exit(0);
     case 's':
       stepflag = 1;
-      breakpoint = pc;
       break;
     case 'p':
       printflag = 1;
@@ -49,8 +48,9 @@ void bpoint(uint32_t instr)
   char cmd[30], *p, *q;
   int i, f = 0, c = 0;
   
-  while((stepflag == 1 || breakflag == 1) && pc == breakpoint) {
+  while((breakflag == 1 && pc == breakpoint) || (stepflag == 1 && stepcount == 0)) {
     stepflag = 1;
+    breakflag = 0;
     fprintf(stderr, ">");
     if(fgets(cmd, 30, stdin) == NULL) {
       perror("no commands");
@@ -58,8 +58,12 @@ void bpoint(uint32_t instr)
     p = strchr(cmd, '\n');
     *p = '\0';
     if(strcmp(cmd, "step") == 0 || strcmp(cmd, "\0") == 0)
-      breakpoint++;
-    else if(strcmp(cmd, "pflagon") == 0)
+      stepcount++;
+    else if(strstr(cmd, "step ") != NULL) {
+      p = strchr(cmd, ' ');
+      p++;
+      stepcount = atoi(p);
+    } else if(strcmp(cmd, "pflagon") == 0)
       printflag = 1;
     else if(strcmp(cmd, "pflagoff") == 0)
       printflag = 0;
@@ -119,6 +123,7 @@ void bpoint(uint32_t instr)
       p = strchr(cmd, ' ');
       p++;
       breakpoint = atoi(p);
+      stepflag = 0;
       breakflag = 1;
     } else if(strcmp(cmd, "run") == 0) {
       stepflag = 0;

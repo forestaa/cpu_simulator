@@ -40,6 +40,7 @@ void print_status()
   fprintf(stderr, "mul_s       : %d\n", mul_s_c);
   fprintf(stderr, "div_s       : %d\n", div_s_c);
   fprintf(stderr, "mov_s       : %d\n", mov_s_c);
+  fprintf(stderr, "neg_s       : %d\n", neg_s_c);
   fprintf(stderr, "c_eq_s      : %d\n", c_eq_s_c);
   fprintf(stderr, "c_olt_s     : %d\n", c_olt_s_c);
   fprintf(stderr, "c_ole_s     : %d\n", c_ole_s_c);
@@ -108,7 +109,7 @@ void print_instr(const char *instr, ...)
     arg2 = va_arg(args, int);
     arg3 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s %s %s %s\n", pc, instr, regname(arg1), regname(arg2), regname(arg3));
-  } else if(strcmp(instr, "mov.s") == 0 || strcmp(instr, "trunc.w.s") == 0 || strcmp(instr, "cvt.s.w") == 0 || strcmp(instr, "c.eq.s") == 0 || strcmp(instr, "c.olt.s") == 0 || strcmp(instr, "c.ole.s") == 0) {
+  } else if(strcmp(instr, "mov.s") == 0 || strcmp(instr, "neg.s") == 0 || strcmp(instr, "trunc.w.s") == 0 || strcmp(instr, "cvt.s.w") == 0 || strcmp(instr, "c.eq.s") == 0 || strcmp(instr, "c.olt.s") == 0 || strcmp(instr, "c.ole.s") == 0) {
     arg1 = va_arg(args, int);
     arg2 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s $f%-2d $f%d\n", pc, instr, arg1, arg2);

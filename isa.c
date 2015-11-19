@@ -264,6 +264,12 @@ void mov_s(int fd, int fs)
   return;
 }
 
+void neg_s(int fd, int fs)
+{
+  freg[fd].f = -freg[fs].f;
+
+  return;
+}
 void c_eq_s(int fs, int ft)
 {
   if(freg[fs].f == freg[ft].f)

@@ -32,6 +32,7 @@ void sub_s(int, int, int);
 void mul_s(int, int, int);
 void div_s(int, int, int);
 void mov_s(int, int);
+void neg_s(int, int);
 void c_eq_s(int, int);
 void c_olt_s(int, int);
 void c_ole_s(int, int);

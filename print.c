@@ -81,7 +81,7 @@ void print_instr(const char *instr, ...)
     arg1 = va_arg(args, int);
     arg2 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s %s %d\n", pc, instr, regname(arg1), arg2);
-  } else if(strcmp(instr, "mfc1") == 0 || strcmp(instr, "mfc1") == 0) {
+  } else if(strcmp(instr, "mfc1") == 0 || strcmp(instr, "mtc1") == 0) {
     arg1 = va_arg(args, int);
     arg2 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s %s $f%d\n", pc, instr, regname(arg1), arg2);

@@ -46,6 +46,7 @@ void print_status()
   fprintf(stderr, "c_olt_s     : %u\n", c_olt_s_c);
   fprintf(stderr, "c_ole_s     : %u\n", c_ole_s_c);
   fprintf(stderr, "bc1t        : %u\n", bc1t_c);
+  fprintf(stderr, "bc1f        : %u\n", bc1f_c);
   fprintf(stderr, "swc1        : %u\n", swc1_c);
   fprintf(stderr, "lwc1        : %u\n", lwc1_c);
   fprintf(stderr, "mfc1        : %u\n", mfc1_c);
@@ -72,7 +73,7 @@ void print_instr(const char *instr, ...)
 
   if(strcmp(instr, "syscall") == 0)
     fprintf(stderr, "[%4d]:%s   $v0 = %d\n", pc, instr, reg[2].i);
-  else if(strcmp(instr, "j") == 0 || strcmp(instr, "jal") == 0 || strcmp(instr, "bc1t") == 0) {
+  else if(strcmp(instr, "j") == 0 || strcmp(instr, "jal") == 0 || strcmp(instr, "bc1t") == 0 || strcmp(instr, "bc1f") == 0) {
     arg1 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s %d\n", pc, instr, arg1);
   } else if(strcmp(instr, "jr") == 0) {

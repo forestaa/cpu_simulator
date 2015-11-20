@@ -318,6 +318,16 @@ void bc1t(int16_t offset)
   return;
 }
 
+void bc1f(int16_t offset)
+{
+  if(cc == 0)
+    pc += offset;
+  else
+    pc++;
+
+  return;
+}
+
 void swc1(int ft, int16_t offset, int base)
 {
   int i = reg[base].i + offset;

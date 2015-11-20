@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
       opcode = pm[pc] & 0x03e00000;
       if(opcode == 0x01000000) {
 	offset = pm[pc];
-	if((pm[pc] && 0x00010000) == 0x00010000) {
+	if((pm[pc] & 0x00010000) == 0x00010000) {
 	  if(printflag == 1)
 	    print_instr("bc1t", offset);
 	  bc1t(offset);

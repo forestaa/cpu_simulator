@@ -10,7 +10,7 @@ void getoption(int argc, char *argv[])
 {
   int i;
   
-  while((i = getopt(argc, argv, "hspb:i:o:")) != -1) {
+  while((i = getopt(argc, argv, "hspvb:i:o:")) != -1) {
     switch(i) {
     case 'h':
       fprintf(stderr, "options\n-h: help\n-s: step exec\n-p: print execut instructions\n-b n: breakpoint n\n");
@@ -20,6 +20,9 @@ void getoption(int argc, char *argv[])
       break;
     case 'p':
       printflag = 1;
+      break;
+    case 'v':
+      instrprint = 1;
       break;
     case 'b':
       breakflag = 1;
@@ -51,7 +54,7 @@ void bpoint(uint32_t instr)
   while((breakflag == 1 && pc == breakpoint) || (stepflag == 1 && stepcount == 0)) {
     stepflag = 1;
     breakflag = 0;
-    fprintf(stderr, ">");
+    fprintf(stderr, "> ");
     if(fgets(cmd, 30, stdin) == NULL) {
       perror("no commands");
     }

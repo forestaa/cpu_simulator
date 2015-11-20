@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 #include "def.h"
 
 static inline void receive_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
@@ -253,6 +254,13 @@ void mul_s(int fd, int fs, int ft)
 void div_s(int fd, int fs, int ft)
 {
   freg[fd].f = freg[fs].f / freg[ft].f;
+
+  return;
+}
+
+void sqrt_s(int fd, int fs)
+{
+  freg[fd].f = sqrt(freg[fs].f);
 
   return;
 }

@@ -9,7 +9,7 @@ TARGETTEST = trifunc_test
 all: $(TARGET)
 
 $(TARGET): sim_machine.c $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 test: trifunc_test.c $(OBJS)
 	$(CC) $(CFLAGS) -o $(TARGETTEST) $^

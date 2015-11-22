@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <math.h>
 #include "def.h"
 #include "func.h"
 
@@ -26,12 +27,12 @@ static inline void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
 int main(int argc, char *argv[])
 {
   FILE *fp;
-  int i, rs, rt, rd, base, fs, ft, fd, pc_init;
+  int i, n, rs, rt, rd, base, fs, ft, fd, pc_init;
   uint32_t pm[50000];
   int32_t  opcode, instr_index;
   int16_t i16, offset;
   uint16_t ui16, sa;
-  float x = -13.0;
+  float x = 0.0;
 
   fpin = stdin;
   fpout = stdout;
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
   }
 
   pc_init = pc;
-  for(i = 0; i < 2600; i++) {
+  while(x < 2*M_PI) {
     freg[12].f = x;
 
     while(pc < 50000) {
@@ -499,7 +500,8 @@ int main(int argc, char *argv[])
     fprintf(fpout, "%f %f\n", x, freg[0].f);
     x += 0.01;
     pc = pc_init;
-    freg[12].i = 0;
+    for(n = 0; n < 32; n++)
+      freg[n].i = 0;
   }
 
   print_status();

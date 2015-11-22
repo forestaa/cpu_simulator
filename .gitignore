@@ -1,9 +1,10 @@
 *.o
 *~
 '#'*
-sim_asm
 sim_machine
+trifunc_test
 test_
 test.c
 result.txt
+res.txt
 output

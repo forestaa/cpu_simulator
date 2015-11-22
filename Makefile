@@ -12,6 +12,6 @@ $(TARGET): sim_machine.c $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 test: trifunc_test.c $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGETTEST) $^
+	$(CC) $(CFLAGS) -o $(TARGETTEST) $^ -lm
 clean:
 	rm -f $(TARGET) $(TARGETTEST) $(OBJS) *~ '#'* result.txt output

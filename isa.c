@@ -6,7 +6,7 @@
 static inline void receive_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
   if(fread(ptr, size, nmemb, stream) == 0)
-    perror("receive errer\n");
+    perror("receive error\n");
 
   return;
 }
@@ -391,6 +391,12 @@ void syscall()
   else if(reg[2].i == 12)
     receive_data(&reg[2], 1, 1, fpin);
     //receive_data(stdin, "%c", &reg[2]);
+  else if(reg[2].i == -1)
+    freg[0].f = sin(freg[12].f);
+  else if(reg[2].i == -2)
+    freg[0].f = cos(freg[12].f);
+  else if(reg[2].i == -3)
+    freg[0].f = atan(freg[12].f);
   else
     fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2].ui);
 

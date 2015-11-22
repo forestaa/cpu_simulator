@@ -89,9 +89,9 @@ void bpoint(uint32_t instr)
 	i = atoi(p);
 	if(i < 1048576) {
 	  if(f == 1)
-	    fprintf(stderr, "memory[%d] = %f  0x%08x\n", i, memory[i].f, memory[i].i);
+	    fprintf(stderr, "memory[%d] = %f  0x%08x\n", i, memory[i].f, memory[i].ui);
 	  else
-	    fprintf(stderr, "memory[%d] = %d  0x%08x\n", i, memory[i].i, memory[i].i);
+	    fprintf(stderr, "memory[%d] = %d  0x%08x\n", i, memory[i].i, memory[i].ui);
 	} else
 	  fprintf(stderr, "memory does not have that size\n");
 	f = 0;

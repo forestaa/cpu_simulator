@@ -420,6 +420,14 @@ int main(int argc, char *argv[])
 	    div_s(fd,fs,ft);
 	    pc++;
 	    div_s_c++;
+	  } else if(opcode == 0x00000004) {
+	    fs = (pm[pc] >> 11) & 0x0000001f;
+	    fd = (pm[pc] >> 6) & 0x0000001f;
+	    if(printflag == 1)
+	      print_instr("sqrt.s", fd, fs);
+	    sqrt_s(fd,fs);
+	    pc++;
+	    sqrt_s_c++;
 	  } else if(opcode == 0x00000006) {
 	    fs = (pm[pc] >> 11) & 0x0000001f;
 	    fd = (pm[pc] >> 6) & 0x0000001f;
@@ -428,6 +436,14 @@ int main(int argc, char *argv[])
 	    mov_s(fd,fs);
 	    pc++;
 	    mov_s_c++;
+	  } else if(opcode == 0x00000007) {
+	    fs = (pm[pc] >> 11) & 0x0000001f;
+	    fd = (pm[pc] >> 6) & 0x0000001f;
+	    if(printflag == 1)
+	      print_instr("neg.s", fd, fs);
+	    neg_s(fd,fs);
+	    pc++;
+	    neg_s_c++;
 	  } else if(opcode == 0x0000000d) {
 	    fs = (pm[pc] >> 11) & 0x0000001f;
 	    fd = (pm[pc] >> 6) & 0x0000001f;

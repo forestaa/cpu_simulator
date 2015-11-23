@@ -37,7 +37,7 @@ void print_status()
   fprintf(stderr, "add_s       : %10u  %lf%%\n", add_s_c, (double)add_s_c/instr_c*100);
   fprintf(stderr, "sub_s       : %10u  %lf%%\n", sub_s_c, (double)sub_s_c/instr_c*100);
   fprintf(stderr, "mul_s       : %10u  %lf%%\n", mul_s_c, (double)mul_s_c/instr_c*100);
-  fprintf(stderr, "div_s       : %10u  %lf%%\n", div_s_c, (double)div_s_c/instr_c*100);
+  fprintf(stderr, "inv_s       : %10u  %lf%%\n", inv_s_c, (double)inv_s_c/instr_c*100);
   fprintf(stderr, "sqrt_s      : %10u  %lf%%\n", sqrt_s_c, (double)sqrt_s_c/instr_c*100);
   fprintf(stderr, "mov_s       : %10u  %lf%%\n", mov_s_c, (double)mov_s_c/instr_c*100);
   fprintf(stderr, "neg_s       : %10u  %lf%%\n", neg_s_c, (double)neg_s_c/instr_c*100);
@@ -110,11 +110,11 @@ void print_instr(const char *instr, ...)
     arg2 = va_arg(args, int);
     arg3 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s %s %s %s\n", pc, instr, regname(arg1), regname(arg2), regname(arg3));
-  } else if(strcmp(instr, "sqrt.s") == 0 || strcmp(instr, "mov.s") == 0 || strcmp(instr, "neg.s") == 0 || strcmp(instr, "trunc.w.s") == 0 || strcmp(instr, "cvt.s.w") == 0 || strcmp(instr, "c.eq.s") == 0 || strcmp(instr, "c.olt.s") == 0 || strcmp(instr, "c.ole.s") == 0) {
+  } else if(strcmp(instr, "inv.s") == 0 || strcmp(instr, "sqrt.s") == 0 || strcmp(instr, "mov.s") == 0 || strcmp(instr, "neg.s") == 0 || strcmp(instr, "trunc.w.s") == 0 || strcmp(instr, "cvt.s.w") == 0 || strcmp(instr, "c.eq.s") == 0 || strcmp(instr, "c.olt.s") == 0 || strcmp(instr, "c.ole.s") == 0) {
     arg1 = va_arg(args, int);
     arg2 = va_arg(args, int);
     fprintf(stderr, "[%4d]:%-10s $f%-2d $f%d\n", pc, instr, arg1, arg2);
-  } else if(strcmp(instr, "add.s") == 0 || strcmp(instr, "sub.s") == 0 || strcmp(instr, "mul.s") == 0 || strcmp(instr, "div.s") == 0) {
+  } else if(strcmp(instr, "add.s") == 0 || strcmp(instr, "sub.s") == 0 || strcmp(instr, "mul.s") == 0) {
     arg1 = va_arg(args, int);
     arg2 = va_arg(args, int);
     arg3 = va_arg(args, int);

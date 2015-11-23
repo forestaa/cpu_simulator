@@ -228,11 +228,11 @@ void lw(int rt, int16_t offset, int base)
   return;
 }
 
-//uint32_t fadd(uint32_t, uint32_t);
+uint32_t fadd(uint32_t, uint32_t);
 void add_s(int fd, int fs, int ft)
 {
-  //freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
-  freg[fd].f = freg[fs].f + freg[ft].f;
+  freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
+  //freg[fd].f = freg[fs].f + freg[ft].f;
 
   return;
 }
@@ -251,9 +251,9 @@ void mul_s(int fd, int fs, int ft)
   return;
 }
 
-void div_s(int fd, int fs, int ft)
+void inv_s(int fd, int fs)
 {
-  freg[fd].f = freg[fs].f / freg[ft].f;
+  freg[fd].f = 1 / freg[fs].f;
 
   return;
 }

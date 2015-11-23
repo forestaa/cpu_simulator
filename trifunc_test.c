@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   int32_t  opcode, instr_index;
   int16_t i16, offset;
   uint16_t ui16, sa;
-  float x = 4.0;
+  float x = 0.0;
 
   fpin = stdin;
   fpout = stdout;

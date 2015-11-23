@@ -294,7 +294,7 @@ void c_olt_s(int fs, int ft)
     cc = 1;
   else
     cc = 0;
-
+ 
   return;
 }
 

@@ -15,7 +15,7 @@ FILE *fpin, *fpout;
 
 void getoption(int, char **);
 void bpoint(uint32_t);
-void exec(uint32_t *);
+void exec(uint32_t);
 void print_status();
 
 static inline void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     if(pm[pc] == 0xffffffff)
       break;
     else 
-      exec(pm);
+      exec(pm[pc]);
 
     if(stepcount > 0)
       stepcount--;

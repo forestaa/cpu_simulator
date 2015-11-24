@@ -48,8 +48,4 @@ void trunc_w_s(int, int);
 
 void syscall();
 
-void getoption(int, char **);
-void bpoint(uint32_t);
-void print_status();
-void print_instr(const char *, ...);
 #endif

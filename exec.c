@@ -13,7 +13,7 @@ void exec(uint32_t instr)
   uint32_t opcode;
 
   opcode = instr & 0xfc000000;
-   if(opcode == 0x00000000) {
+  if(opcode == 0x00000000) {
     opcode = instr & 0x0000003f;
     if(opcode == 0x00000020) {
       rs = (instr >> 21) & 0x0000001f;

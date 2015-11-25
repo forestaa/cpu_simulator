@@ -8,7 +8,7 @@ void print_status()
 {
   int i;
 
-  fprintf(stderr, "instructions: %u\n", instr_c);
+  fprintf(stderr, "instructions: %llu\n", instr_c);
   fprintf(stderr, "add         : %10u  %lf%%\n", add_c, (double)add_c/instr_c*100);
   fprintf(stderr, "sub         : %10u  %lf%%\n", sub_c, (double)sub_c/instr_c*100);
   fprintf(stderr, "slt         : %10u  %lf%%\n", slt_c, (double)slt_c/instr_c*100);

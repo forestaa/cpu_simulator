@@ -1,5 +1,5 @@
-#ifndef __FUNC_H__
-#define __FUNC_H__
+#ifndef __ISA_H__
+#define __ISA_H__
 
 void add(int, int, int);
 void addi(int, int, int16_t);

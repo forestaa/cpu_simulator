@@ -5,7 +5,6 @@
 #include <string.h>
 #include "def.h"
 
-int regnum(char *);
 void getoption(int argc, char *argv[])
 {
   int i;
@@ -45,7 +44,8 @@ void getoption(int argc, char *argv[])
   
   return;
 }
-    
+
+int regnum(char *);    
 void bpoint(uint32_t instr)
 { 
   char cmd[30], *p, *q;

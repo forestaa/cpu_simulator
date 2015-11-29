@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "def.h"
-#include "func.h"
+#include "isa.h"
 
 void print_instr(const char *, ...);
 void exec(uint32_t instr)

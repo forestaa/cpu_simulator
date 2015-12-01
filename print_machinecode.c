@@ -19,12 +19,12 @@ int main(int argc, char *argv[])
 
   fclose(fp);
 
-  printf("type table is array(0 to %d) of std_logic_vector(31 downto 0);\n", size);
+  printf("type table is array(0 to %d) of std_logic_vector(31 downto 0);\n", size-1);
   printf(" constant testtable : table := (\n  ");
   while(i < size-1) {
     printf(" x\"%08x\",", array[i]);
     j++;
-    if(j == 4) {
+    if(j == 5) {
       printf("\n  ");
       j = 0;
     }

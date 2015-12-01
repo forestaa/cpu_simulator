@@ -13,5 +13,8 @@ $(TARGET): sim_machine.c $(OBJS)
 
 test: trifunc_test.c $(OBJS)
 	$(CC) $(CFLAGS) -o $(TARGETTEST) $^ -lm
+
+print: print_machinecode.c
+	$(CC) -Wall -o $@ $^
 clean:
-	rm -f $(TARGET) $(TARGETTEST) $(OBJS) *~ '#'* res.txt output
+	rm -f $(TARGET) $(TARGETTEST) $(OBJS) *~ '#'* res.txt output print

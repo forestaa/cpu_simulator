@@ -231,8 +231,8 @@ void lw(int rt, int16_t offset, int base)
 uint32_t fadd(uint32_t, uint32_t);
 void add_s(int fd, int fs, int ft)
 {
-  freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
-  //freg[fd].f = freg[fs].f + freg[ft].f;
+  //freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
+  freg[fd].f = freg[fs].f + freg[ft].f;
 
   return;
 }
@@ -247,8 +247,8 @@ void sub_s(int fd, int fs, int ft)
 uint32_t fmul(uint32_t, uint32_t);
 void mul_s(int fd, int fs, int ft)
 {
-  freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
-  //freg[fd].f = freg[fs].f * freg[ft].f;
+  //freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
+  freg[fd].f = freg[fs].f * freg[ft].f;
 
   return;
 }
@@ -277,8 +277,8 @@ void mov_s(int fd, int fs)
 uint32_t fneg(uint32_t);
 void neg_s(int fd, int fs)
 {
-  freg[fd].ui = fneg(freg[fs].ui);
-  //freg[fd].f = -freg[fs].f;
+  //freg[fd].ui = fneg(freg[fs].ui);
+  freg[fd].f = -freg[fs].f;
 
   return;
 }

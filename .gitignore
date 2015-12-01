@@ -3,8 +3,10 @@
 '#'*
 sim_machine
 trifunc_test
+print
 test_
 test.c
 result.txt
 res.txt
 output
+table.txt

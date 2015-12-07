@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   }
 
   reg[29].i = 1048575;
-  reg[30].i = 65536;
+  reg[30].i = 0;
   
   for(i = 0; i < 1048576; i++)
     memory[i].i = 0;

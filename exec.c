@@ -1,16 +1,21 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <math.h>
 #include "def.h"
 #include "isa.h"
 
+void bpoint();
 void print_instr(const char *, ...);
-void exec(uint32_t instr)
+void exec_debug(uint32_t instr)
 {
   int rs, rt, rd, base, fs, ft, fd;
   int32_t instr_index;
   int16_t i16, offset;
   uint16_t ui16, sa;
   uint32_t opcode;
+
+  bpoint();
 
   opcode = instr & 0xfc000000;
   if(opcode == 0x00000000) {
@@ -397,5 +402,10 @@ void exec(uint32_t instr)
     pc++;
   }
 
-   return;
+  if(stepcount > 0)
+      stepcount--;
+
+  instr_c++;
+
+  return;
 }

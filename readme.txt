@@ -3,29 +3,19 @@ Super-Cool simulator for our 1st CPU!
 Usage
 
 $make
-This command build "sim_asm" and "sim_machine".
+This command build "sim" and "sim_debug".
 
-If you want to build "sim_asm" xor "sim_machine", use command
-$make sim_asm  xor $make sim_machine.
-
-
-"sim_asm" is simulator for assembla code.
-$./sim_asm ./test/test.s
-If you use this command, "sim_asm" execute ./test/test.s, print instructions and "END".
-If all instructions are normally executed, print "complete instructions" and contents of registers.
-
-"sim_machine" is also simulator for machine code.
-$./sim_machine ./test/output
-If you use this command, "sim_machine" execute ./test/output, print binarydata.
-If a instruction is executed, print that instruction, and if all instrucions are executed, print "complete instructions" and contents of registers.
-
+"sim" is a simulator for machine code.
+$./sim ./test/output
+If you use this command, "sim" execute ./test/output.
+If all instrucions are executed, print "complete instructions" and contents of registers.
 
 $make clean
 This command remove built files.
 
 英語無理()
 
-オプションについて！！
+オプションについて！！(sim_debug)
 今あるオプションは以下の通りです
 
 -h: help ヘルプらしい何かが出てきてプログラムが終了する
@@ -34,7 +24,7 @@ This command remove built files.
 -b n: breakpoint nをbreakpointに設定してプログラムを開始する。breakpointで使えるコマンドは後述
 
 使い方はこう
-./sim_machine -pb 10 (machinecodepath)
+./sim_debug -pb 10 (machinecodepath)
 真ん中でオプションをつける。-p -b 10みたいに分けてもいい。最後だけは機械語のバイナリコードにしないとfopenできない。
 
 謎のオプションを入れると文句言ってプログラムが終わる。-bに引数がないとbreakpointを0にして始める。
@@ -56,13 +46,9 @@ run: breakflagを切ります。デバッグ終わったらpflagoffしてからr
 総命令数と各命令の実行数を出力するようにしたから頑張って高速化しような
 
 レイトレでの入出力は標準入力と標準出力を使います。(どっかに書いてあった)
-ですので、syscallでの入出力もstdin,stdoutを用いてます。
+ですので、syscallでの入出力もstdin,stdoutを用いてます。(大嘘)
 
-./sim_machine -p -b 10 ../compiler/suiteki/output < input.txt > result.txt
-
-こんなふうにリダイレクトを使ってあげるとsyscallでの入出力が可能です。
-
-sim_asmはそのうち使えるようにしますので少々お待ちください()
+./sim_debug -p -b 10 -i input.txt -o result.txt ../compiler/suiteki/output
 
 
 三角関数のてすとについて

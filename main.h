@@ -12,8 +12,6 @@ Value reg[32], freg[32], memory[1048576];
 FILE *fpin, *fpout;
 
 void getoption(int, char **);
-void bpoint(uint32_t);
-void exec(uint32_t);
 void print_status();
 
 #endif

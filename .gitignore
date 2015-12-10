@@ -1,7 +1,8 @@
 *.o
 *~
 '#'*
-sim_machine
+sim
+sim_debug
 trifunc_test
 print
 test_
@@ -10,3 +11,4 @@ result.txt
 res.txt
 output
 table.txt
+sim-hs

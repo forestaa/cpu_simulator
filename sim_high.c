@@ -8,7 +8,7 @@
 #include "main.h"
 
 static inline void exec(uint32_t);
-static inline void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
+void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
 {
   if(fread(ptr, size, nmemb, fp) == 0) {
     perror("cannot read\n");

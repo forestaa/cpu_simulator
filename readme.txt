@@ -3,12 +3,16 @@ Super-Cool simulator for our 1st CPU!
 Usage
 
 $make
-This command build "sim" and "sim_debug".
+This command build "sim".
 
 "sim" is a simulator for machine code.
 $./sim ./test/output
 If you use this command, "sim" execute ./test/output.
 If all instrucions are executed, print "complete instructions" and contents of registers.
+
+$make debug
+If you use this command, "sim_debug" will be built.
+"sim_debug" has many debug functions. See below if you want to know details.
 
 $make clean
 This command remove built files.

@@ -7,7 +7,7 @@ TARGET = sim
 DEBUG = sim_debug
 TRITEST = trifunc_test
 
-all: $(TARGET)
+default: $(TARGET)
 
 $(TARGET): sim_high.c
 	$(CC) $(CFLAGS) -o $@ $^ -lm

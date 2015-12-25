@@ -5,6 +5,7 @@
 #include "def.h"
 #include "main.h"
 
+void exec_debug(uint32_t);
 static inline void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
 {
   if(fread(ptr, size, nmemb, fp) == 0) {
@@ -72,18 +73,11 @@ int main(int argc, char *argv[])
     freg[12].f = x;
 
     while(pc < 50000) {
-
-      bpoint(pm[pc]);
-      
       if(pm[pc] == 0xffffffff)
 	break;
       else
-	exec(pm[pc]);
-    
-      if(stepcount > 0)
-	stepcount--;
-      
-      instr_c++;
+	exec_debug(pm[pc]);
+   
     }
     fprintf(fpout, "%f %f\n", x, freg[0].f);
     x += 0.01;

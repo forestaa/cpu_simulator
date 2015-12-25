@@ -179,7 +179,7 @@ void lw(int rt, int16_t offset, int base)
   reg[rt].i = memory[i].i;
 }
 
-uint32_t fadd(uint32_t, uint32_t);
+//uint32_t fadd(uint32_t, uint32_t);
 void add_s(int fd, int fs, int ft)
 {
   //freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
@@ -191,21 +191,25 @@ void sub_s(int fd, int fs, int ft)
   freg[fd].f = freg[fs].f - freg[ft].f;
 }
 
-uint32_t fmul(uint32_t, uint32_t);
+//uint32_t fmul(uint32_t, uint32_t);
 void mul_s(int fd, int fs, int ft)
 {
   //freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
   freg[fd].f = freg[fs].f * freg[ft].f;
 }
 
+uint32_t finv(uint32_t);
 void inv_s(int fd, int fs)
 {
-  freg[fd].f = 1 / freg[fs].f;
+  //freg[fd].f = 1 / freg[fs].f;
+  freg[fd].ui = finv(freg[fs].ui);
 }
 
+uint32_t fsqrt(uint32_t);
 void sqrt_s(int fd, int fs)
 {
-  freg[fd].f = sqrt(freg[fs].f);
+  //freg[fd].f = sqrt(freg[fs].f);
+  freg[fd].ui = fsqrt(freg[fs].ui);
 }
 
 void mov_s(int fd, int fs)
@@ -213,7 +217,7 @@ void mov_s(int fd, int fs)
   freg[fd].f = freg[fs].f;
 }
 
-uint32_t fneg(uint32_t);
+//uint32_t fneg(uint32_t);
 void neg_s(int fd, int fs)
 {
   //freg[fd].ui = fneg(freg[fs].ui);
@@ -284,14 +288,18 @@ void mtc1(int rt, int fs)
   freg[fs].f = reg[rt].f;
 }
 
+uint32_t itof(uint32_t);
 void cvt_s_w(int fd, int fs)
 {
-  freg[fd].f = freg[fs].i;
+  //freg[fd].f = freg[fs].i;
+  freg[fd].ui = itof(freg[fs].ui);
 }
 
+uint32_t ftoi(uint32_t);
 void trunc_w_s(int fd, int fs)
 {
-  freg[fd].i = freg[fs].f;
+  //freg[fd].i = freg[fs].f;
+  freg[fd].ui = ftoi(freg[fs].ui);
 }
 
 void syscall()

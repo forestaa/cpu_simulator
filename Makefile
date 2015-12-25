@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -O3 -Wall
-SRCS = exec.c isa.c print.c opt.c regnum.c ../FPU/fadd.c ../FPU/fneg.c ../FPU/def.c ../FPU/fmul.c
+SRCS = exec.c isa.c print.c opt.c regnum.c ../FPU/fadd.c ../FPU/fneg.c ../FPU/def.c ../FPU/fmul.c ../FPU/fsqrt.c ../FPU/finv.c ../FPU/ftoi.c ../FPU/itof.c
 OBJS = $(SRCS:.c=.o)
 
 TARGET = sim
@@ -9,7 +9,7 @@ TRITEST = trifunc_test
 
 default: $(TARGET)
 
-$(TARGET): sim_high.c
+$(TARGET): sim_high.c 
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
 debug: sim_debug.c $(OBJS)

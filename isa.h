@@ -1,51 +1,322 @@
-#ifndef __ISA_H__
-#define __ISA_H__
+#ifndef __ISA_H_
+#define __ISA_H_
 
-void add(int, int, int);
-void addi(int, int, int16_t);
-void addiu(int, int, int16_t);
-void sub(int, int, int);
-void slt(int, int, int);
-void and(int, int, int);
-void or(int, int, int);
-void ori(int, int, uint16_t);
-void xor(int, int, int);
-void sll(int, int, uint16_t);
-void sllv(int, int, int);
-void srl(int, int, uint16_t);
-void j(int32_t);
-void jr(int);
-void jal(int32_t);
-void jalr(int, int);
-void beq(int, int, int16_t);
-void bne(int, int, int16_t);
-void blez(int, int16_t);
-void bgez(int, int16_t);
-void bltz(int, int16_t);
-void bgtz(int, int16_t);
-void lui(int, int16_t);
-void sw(int, int16_t, int);
-void lw(int, int16_t, int);
+#include <math.h>
 
-void add_s(int, int, int);
-void sub_s(int, int, int);
-void mul_s(int, int, int);
-void inv_s(int, int);
-void sqrt_s(int, int);
-void mov_s(int, int);
-void neg_s(int, int);
-void c_eq_s(int, int);
-void c_olt_s(int, int);
-void c_ole_s(int, int);
-void bc1t(int16_t);
-void bc1f(int16_t);
-void swc1(int, int16_t, int);
-void lwc1(int, int16_t, int);
-void mfc1(int, int);
-void mtc1(int, int);
-void cvt_s_w(int, int);
-void trunc_w_s(int, int);
+static inline void receive_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+  if(fread(ptr, size, nmemb, stream) == 0)
+    perror("receive error\n");
+}
 
-void syscall();
+static inline void add(int rd, int rs, int rt)
+{
+  reg[rd].i = reg[rs].i + reg[rt].i;
+}
+
+static inline void sub(int rd, int rs, int rt)
+{
+  reg[rd].i = reg[rs].i - reg[rt].i;
+}
+
+static inline void slt(int rd, int rs, int rt)
+{
+  if(reg[rs].i < reg[rt].i)
+    reg[rd].i = 1;
+  else
+    reg[rd].i = 0;
+}
+
+static inline void and(int rd, int rs, int rt)
+{
+  reg[rd].i = reg[rs].i & reg[rt].i;
+}
+
+static inline void or(int rd, int rs, int rt)
+{
+  reg[rd].i = reg[rs].i | reg[rt].i;
+}
+
+static inline void xor(int rd, int rs, int rt)
+{
+  reg[rd].i = reg[rs].i ^ reg[rt].i;
+}
+
+static inline void sll(int rd, int rt, uint16_t sa)
+{
+  reg[rd].i = reg[rt].i << sa;
+}
+
+static inline void sllv(int rd, int rt, int rs)
+{
+  reg[rd].i = reg[rt].i << reg[rs].i;
+}
+
+static inline void srl(int rd, int rt, uint16_t sa)
+{
+  reg[rd].ui = reg[rt].ui >> sa;
+}
+
+static inline void addi(int rt, int rs, int16_t i)
+{
+  reg[rt].i = reg[rs].i + i;
+}
+
+static inline void addiu(int rt, int rs, int16_t i)
+{
+  reg[rt].i = reg[rs].i + i;
+}
+
+static inline void j(int32_t instr_index)
+{
+  pc = instr_index;
+}
+
+static inline void jr(int rs)
+{
+  pc = reg[rs].i;
+}
+
+static inline void jal(int32_t instr_index)
+{
+  reg[31].i = pc + 1; 
+
+  pc = instr_index;
+}
+
+static inline void jalr(int rd, int rs)
+{
+  reg[rd].i = pc + 1;
+
+  pc = reg[rs].i;
+}
+
+static inline void beq(int rs, int rt, int16_t offset)
+{
+  if(reg[rs].i == reg[rt].i)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void bne(int rs, int rt, int16_t offset)
+{
+  if(reg[rs].i != reg[rt].i)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void blez(int rs, int16_t offset)
+{
+  if(reg[rs].i <= 0)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void bgez(int rs, int16_t offset)
+{
+  if(reg[rs].i >= 0)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void bgtz(int rs, int16_t offset)
+{
+  if(reg[rs].i > 0)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void bltz(int rs, int16_t offset)
+{
+  if(reg[rs].i < 0)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void lui(int rt, int16_t i)
+{
+  int32_t j = i;
+
+  reg[rt].i = j << 16;
+}
+
+static inline void ori(int rt, int rs, uint16_t ui)
+{
+  uint32_t i = ui;
+
+  reg[rt].i = reg[rs].i | i;
+}
+
+static inline void sw(int rt, int16_t offset, int base)
+{
+  int i = reg[base].i + offset;
+
+  memory[i].i = reg[rt].i;
+
+  return;
+} 
+
+static inline void lw(int rt, int16_t offset, int base)
+{
+  int i = reg[base].i + offset;
+
+  reg[rt].i = memory[i].i;
+}
+
+//uint32_t fadd(uint32_t, uint32_t);
+static inline void add_s(int fd, int fs, int ft)
+{
+  //freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
+  freg[fd].f = freg[fs].f + freg[ft].f;
+}
+
+static inline void sub_s(int fd, int fs, int ft)
+{
+  freg[fd].f = freg[fs].f - freg[ft].f;
+}
+
+//uint32_t fmul(uint32_t, uint32_t);
+static inline void mul_s(int fd, int fs, int ft)
+{
+  //freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
+  freg[fd].f = freg[fs].f * freg[ft].f;
+}
+
+//uint32_t finv(uint32_t);
+static inline void inv_s(int fd, int fs)
+{
+  freg[fd].f = 1 / freg[fs].f;
+  //freg[fd].ui = finv(freg[fs].ui);
+}
+
+//uint32_t fsqrt(uint32_t);
+static inline void sqrt_s(int fd, int fs)
+{
+  freg[fd].f = sqrt(freg[fs].f);
+  //freg[fd].ui = fsqrt(freg[fs].ui);
+}
+
+static inline void mov_s(int fd, int fs)
+{
+  freg[fd].f = freg[fs].f;
+}
+
+//uint32_t fneg(uint32_t);
+static inline void neg_s(int fd, int fs)
+{
+  //freg[fd].ui = fneg(freg[fs].ui);
+  freg[fd].f = -freg[fs].f;
+}
+
+static inline void c_eq_s(int fs, int ft)
+{
+  if(freg[fs].f == freg[ft].f)
+    cc = 1;
+  else
+    cc = 0;
+}
+
+static inline void c_olt_s(int fs, int ft)
+{
+  if(freg[fs].f < freg[ft].f)
+    cc = 1;
+  else
+    cc = 0;
+}
+
+static inline void c_ole_s(int fs, int ft)
+{
+  if(freg[fs].f <= freg[ft].f)
+    cc = 1;
+  else
+    cc = 0;
+}
+
+static inline void bc1t(int16_t offset)
+{
+  if(cc == 1)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void bc1f(int16_t offset)
+{
+  if(cc == 0)
+    pc += offset;
+  else
+    pc++;
+}
+
+static inline void swc1(int ft, int16_t offset, int base)
+{
+  int i = reg[base].i + offset;
+
+  memory[i].f = freg[ft].f;
+}
+
+static inline void lwc1(int ft, int16_t offset, int base)
+{
+  int i = reg[base].i + offset;
+
+  freg[ft].f = memory[i].f;
+}
+
+static inline void mfc1(int rt, int fs)
+{
+  reg[rt].i = freg[fs].i;
+}
+
+static inline void mtc1(int rt, int fs)
+{
+  freg[fs].f = reg[rt].f;
+}
+
+//uint32_t itof(uint32_t);
+static inline void cvt_s_w(int fd, int fs)
+{
+  freg[fd].f = freg[fs].i;
+  //freg[fd].ui = itof(freg[fs].ui);
+}
+
+//uint32_t ftoi(uint32_t);
+static inline void trunc_w_s(int fd, int fs)
+{
+  freg[fd].i = freg[fs].f;
+  //freg[fd].ui = ftoi(freg[fs].ui);
+}
+
+static inline void syscall()
+{
+  if(reg[2].i == 1)
+    fprintf(fpout, "%d", reg[4].i);
+  else if(reg[2].i == 2)
+    fprintf(fpout, "%f", freg[12].f);
+  else if(reg[2].i == 5)
+    receive_data(&reg[2], 4, 1, fpin);
+    //receive_data(stdin, "%d", &reg[2].i);
+  else if(reg[2].i == 6)
+    receive_data(&freg[0], 4, 1, fpin);
+    //receive_data(stdin, "%f", &freg[0].f);
+  else if(reg[2].i == 11)
+    fprintf(fpout, "%c", reg[4].c);
+  else if(reg[2].i == 12)
+    receive_data(&reg[2], 1, 1, fpin);
+    //receive_data(stdin, "%c", &reg[2]);
+  else if(reg[2].i == -1)
+    freg[0].f = sin(freg[12].f);
+  else if(reg[2].i == -2)
+    freg[0].f = cos(freg[12].f);
+  else if(reg[2].i == -3)
+    freg[0].f = atan(freg[12].f);
+  else
+    fprintf(stderr, "this syscall is not defined, r2 = %08x\n", reg[2].ui);
+}
 
 #endif

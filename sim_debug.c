@@ -4,8 +4,8 @@
 #include <sys/time.h>
 #include "def.h"
 #include "main.h"
+#include "exec.h"
 
-void exec_debug(uint32_t);
 static inline void read_data(void *ptr, size_t size, size_t nmemb, FILE *fp)
 {
   if(fread(ptr, size, nmemb, fp) == 0) {

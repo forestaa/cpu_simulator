@@ -1,26 +1,34 @@
 CC = gcc
 CFLAGS = -O3 -Wall
-SRCS = print.c opt.c regnum.c
-FPUSRCS = ../FPU/fadd.c ../FPU/fneg.c ../FPU/def.c ../FPU/fmul.c ../FPU/fsqrt.c ../FPU/finv.c ../FPU/ftoi.c ../FPU/itof.c
-OBJS = $(SRCS:.c=.o)
-FPUOBJS = $(FPUSRCS:.c=.o)
+SRCS = print.c option.c register.c load.c
+OBJS = $(SRCS:%.c=%.o)
+DEPS = $(SRCS:%.c=%.d) sim_high.d sim_debug.d lib_test.d
+FPUDIR = ../FPU
+FPUSRCS = fadd.c fneg.c def.c fmul.c fsqrt.c finv.c ftoi.c itof.c
+FPUOBJS = $(FPUSRCS:%.c=$(FPUDIR)/%.o)
 
 TARGET = sim
 DEBUG = sim_debug
-TRITEST = trifunc_test
+LIBTEST = lib_test
 
 default: $(TARGET)
 
-$(TARGET): sim_high.c $(OBJS)
+$(TARGET): sim_high.o $(OBJS) $(FPUOBJS)
 	$(CC) $(CFLAGS) -o $@ $^ -lm
 
-debug: sim_debug.c $(OBJS)
+debug: sim_debug.o $(OBJS)
 	$(CC) $(CFLAGS) -o $(DEBUG) $^ -lm
 
-test: trifunc_test.c $(OBJS)
-	$(CC) $(CFLAGS) -o $(TRITEST) $^ -lm
+test: lib_test.o $(OBJS)
+	$(CC) $(CFLAGS) -o $(LIBTEST) $^ -lm
 
 print: print_machinecode.c
 	$(CC) -Wall -o $@ $^
+
+%.o: %.c
+	$(CC) -O3 -c -MMD -MP -o $@ $<
+
 clean:
-	rm -f $(TARGET) $(DEBUG) $(TRITEST) $(OBJS) *~ '#'* res.txt output print
+	rm -f $(TARGET) $(DEBUG) $(LIBTEST) $(OBJS) $(DEPS) $(FPUOBJS) sim_high.o sim_debug.o lib_test.o *~ '#'* res.txt output print
+
+-include $(DEPS)

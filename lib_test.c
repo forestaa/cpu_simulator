@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <sys/time.h>
 #include "def.h"
 #include "main.h"
 #include "table.h"
@@ -10,10 +9,9 @@
 int main(int argc, char *argv[])
 {
   FILE *fp;
-  int i;
+  int i, pc_init;
   Program pm[50000];
-  struct timeval tv0,tv1;
-  double time;
+  float x = 0.0;
 
   fpin = stdin;
   fpout = stdout;
@@ -24,7 +22,7 @@ int main(int argc, char *argv[])
   }
 
   reg[29].i = 1048575;
-  reg[30].i = 0;
+  reg[30].i = 65536;
   
   for(i = 0; i < 1048576; i++)
     memory[i].i = 0;
@@ -38,22 +36,36 @@ int main(int argc, char *argv[])
 
   fclose(fp);
 
-  getoption(argc, argv);
+  getoption(argc, argv); 
 
-  gettimeofday(&tv0, NULL);
+  pc_init = pc;
+  while(x < 2*M_PI) {
+    freg[12].f = x;
   
-  while(exec(pm[pc]) == 0);
+    do{
+      if(printflag == 1)
+        print_instr(pm[pc]);
+      
+      while((breakflag == 1 && pc == breakpoint) || (stepflag == 1 && stepcount == 0))
+        bpoint(pm[pc]);
+      
+      if(stepcount > 0)
+        stepcount--;
+      
+    } while(exec(pm[pc]) == 0);
+    
+    fprintf(fpout, "%f %f\n", x, freg[0].f);
+    x += 0.01;
+    pc = pc_init;
+    for(i = 0; i < 32; i++)
+      freg[i].i = 0;
+  }
 
-  gettimeofday(&tv1, NULL);
-  time = (double)(tv1.tv_sec - tv0.tv_sec + (tv1.tv_usec - tv0.tv_usec)*0.001*0.001);
   fprintf(stderr, "complete instructions\n");
-  
   print_status();
-  
+
   fclose(fpin);
   fclose(fpout);
-
-  fprintf(stderr, "time = %lf\nips = %f million instructions / sec\n", time, instructions/time/1000000);
 
   return 0;
 }

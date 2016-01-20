@@ -1,11 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <signal.h>
 #include <sys/time.h>
 #include "def.h"
 #include "main.h"
 #include "table.h"
 #include "exec.h"
+
+volatile int sigint = 0, sigsegv = 0;
+
+void signalcatch(int signal)
+{
+  if(signal == SIGINT)
+    sigint = 1;
+  else if(signal == SIGSEGV)
+    sigsegv = 1;
+}
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +25,11 @@ int main(int argc, char *argv[])
   Program pm[50000];
   struct timeval tv0,tv1;
   double time;
+  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = 0};
+
+  sigemptyset(&sigact.sa_mask);
+  sigaction(SIGINT, &sigact, NULL);
+  sigaction(SIGSEGV, &sigact, NULL);
 
   fpin = stdin;
   fpout = stdout;
@@ -42,11 +58,19 @@ int main(int argc, char *argv[])
 
   gettimeofday(&tv0, NULL);
   
-  while(exec(pm[pc]) == 0);
+  while(exec(pm[pc]) == 0 && sigint == 0 && sigsegv == 0);
 
   gettimeofday(&tv1, NULL);
   time = (double)(tv1.tv_sec - tv0.tv_sec + (tv1.tv_usec - tv0.tv_usec)*0.001*0.001);
-  fprintf(stderr, "complete instructions\n");
+
+  if(sigint == 1) {
+    fprintf(stderr, "sigint caught\npc = %d\n", pc);
+    print_instr(pm[pc]);
+  } else if(sigsegv == 1) {
+    fprintf(stderr, "sigsegv caught\npc = %d\n", pc);
+    print_instr(pm[pc]);
+  } else
+    fprintf(stderr, "complete instructions\n");
   
   print_status();
   

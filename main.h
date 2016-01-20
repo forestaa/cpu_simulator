@@ -1,7 +1,7 @@
 #ifndef __MAIN_H_
 #define __MAIN_H_
 
-long long unsigned int instructions = -1;
+long long unsigned int instructions = 0;
 unsigned int icount[45] = {0};
 int stepflag = 0, stepcount = 0, breakflag = 0, breakpoint, printflag = 0, instrprint = 0;
 int pc = 0, cc = 0;

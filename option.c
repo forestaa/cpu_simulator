@@ -49,7 +49,7 @@ void bpoint(Program instr)
 {
   char cmd[30], *p, *q;
   int i, f = 0, c = 0;
-  
+
   stepflag = 1;
   breakflag = 0;
   fprintf(stderr, "> ");

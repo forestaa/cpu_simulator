@@ -12,9 +12,10 @@ int main(int argc, char *argv[])
   FILE *fp;
   int i;
   Program pm[50000];
-  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = SA_RESTART};
+  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = SA_RESTART}, ign = {.sa_handler = SIG_IGN, .sa_flags = SA_RESTART};
 
   sigemptyset(&sigact.sa_mask);
+  sigemptyset(&ign.sa_mask);
   sigaction(SIGINT, &sigact, NULL);
   sigaction(SIGSEGV, &sigact, NULL);
 
@@ -47,9 +48,14 @@ int main(int argc, char *argv[])
     if(printflag == 1)
       print_instr(pm[pc], pc);
     
-    while((breakflag == 1 && pc == breakpoint) || (stepflag == 1 && stepcount == 0))
-      bpoint(pm[pc]);
-    
+    while((breakflag == 1 && pc == breakpoint) || (stepflag == 1 && stepcount == 0)) {
+       sigaction(SIGINT, &ign, NULL);
+
+       bpoint(pm[pc]);
+
+       sigaction(SIGINT, &sigact, NULL);
+    }
+
     if(stepcount > 0)
       stepcount--;
 

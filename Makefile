@@ -14,21 +14,21 @@ LIBTEST = lib_test
 default: $(TARGET)
 
 $(TARGET): sim_high.o $(OBJS) $(FPUOBJS)
-	$(CC) $(CFLAGS) -o $@ $^ -lm
+		$(CC) $(CFLAGS) -o $@ $^ -lm
 
 debug: sim_debug.o $(OBJS)
-	$(CC) $(CFLAGS) -o $(DEBUG) $^ -lm
+		$(CC) $(CFLAGS) -o $(DEBUG) $^ -lm
 
 test: lib_test.o $(OBJS)
-	$(CC) $(CFLAGS) -o $(LIBTEST) $^ -lm
+		$(CC) $(CFLAGS) -o $(LIBTEST) $^ -lm
 
 print: print_machinecode.c
-	$(CC) -Wall -o $@ $^
+		$(CC) -Wall -o $@ $^
 
 %.o: %.c
-	$(CC) -O3 -c -MMD -MP -o $@ $<
+		$(CC) -O3 -c -MMD -MP -o $@ $<
 
 clean:
-	rm -f $(TARGET) $(DEBUG) $(LIBTEST) $(OBJS) $(DEPS) $(FPUOBJS) sim_high.o sim_debug.o lib_test.o *~ '#'* res.txt output print
+		rm -f $(TARGET) $(DEBUG) $(LIBTEST) $(OBJS) $(DEPS) $(FPUOBJS) sim_high.o sim_debug.o lib_test.o *~ '#'* res.txt output print
 
 -include $(DEPS)

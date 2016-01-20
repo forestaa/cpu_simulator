@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
 
   fpin = stdin;
   fpout = stdout;
-  fpinstr = stdout;
 
   for(i = 0; i < 32; i++) {
     reg[i].i = 0;

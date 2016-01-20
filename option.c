@@ -9,7 +9,7 @@ void getoption(int argc, char *argv[])
 {
   int i;
   
-  while((i = getopt(argc, argv, "hspv:b:i:o:")) != -1) {
+  while((i = getopt(argc, argv, "hspvb:i:o:")) != -1) {
     switch(i) {
     case 'h':
       fprintf(stderr, "options\n-h: help\n-s: step exec\n-p: print execut instructions\n-b n: breakpoint n\n");

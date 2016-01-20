@@ -38,11 +38,11 @@ int main(int argc, char *argv[])
     return 0;
   }
 
+  getoption(argc, argv);
+
   load(fp, pm);
 
   fclose(fp);
-
-  getoption(argc, argv);
   
   do{
     if(printflag == 1)

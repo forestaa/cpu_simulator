@@ -11,7 +11,7 @@ void print_status()
   fprintf(fp, "instructions: %llu\n", instructions);
 
   for(i = 0; i < 44; i++)
-    fprintf(fp, "%-9s : %10u  %lf%%\n", inum2instr[i], icount[i], (double)icount[i]/instructions*100);
+    fprintf(fp, "%-11s : %10u  %lf%%\n", inum2instr[i], icount[i], (double)icount[i]/instructions*100);
     
   for(i = 0; i < 32; i++)
     fprintf(stderr, "r%-2d  %8d  0x%08x\n", i, reg[i].i, reg[i].ui);

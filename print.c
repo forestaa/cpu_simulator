@@ -22,41 +22,41 @@ void print_status()
 }
 
 char *regname(int);
-void print_instr(Program p)
+void print_instr(Program p, int pc_)
 {
   char instr[20];
 
   strcpy(instr, inum2instr[p.inum]);
 
   if(strcmp(instr, "syscall") == 0)
-    fprintf(stderr, "[%4d]:syscall     $v0 = %d\n", pc, reg[2].i);
+    fprintf(stderr, "[%4d]:syscall     $v0 = %d\n", pc_, reg[2].i);
   else if(strcmp(instr, "j") == 0 || strcmp(instr, "jal") == 0 || strcmp(instr, "bc1t") == 0 || strcmp(instr, "bc1f") == 0)
-    fprintf(stderr, "[%4d]:%-10s %d\n", pc, instr, p.op1);
+    fprintf(stderr, "[%4d]:%-10s %d\n", pc_, instr, p.op1);
   else if(strcmp(instr, "jr") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s\n", pc, instr, regname(p.op1));
+    fprintf(stderr, "[%4d]:%-10s %s\n", pc_, instr, regname(p.op1));
   else if(strcmp(instr, "blez") == 0 || strcmp(instr, "bgez") == 0 || strcmp(instr, "bltz") == 0 || strcmp(instr, "bgtz") == 0 || strcmp(instr, "lui") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s %d\n", pc, instr, regname(p.op1), p.op2);
+    fprintf(stderr, "[%4d]:%-10s %s %d\n", pc_, instr, regname(p.op1), p.op2);
   else if(strcmp(instr, "mfc1") == 0 || strcmp(instr, "mtc1") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s $f%d\n", pc, instr, regname(p.op1), p.op2);
+    fprintf(stderr, "[%4d]:%-10s %s $f%d\n", pc_, instr, regname(p.op1), p.op2);
   else if(strcmp(instr, "jalr") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s %s\n", pc, instr, regname(p.op2), regname(p.op1));
+    fprintf(stderr, "[%4d]:%-10s %s %s\n", pc_, instr, regname(p.op2), regname(p.op1));
   else if(strcmp(instr, "sll") == 0 || strcmp(instr, "srl") == 0 || strcmp(instr, "addi") == 0 || strcmp(instr, "addiu") == 0 || strcmp(instr, "ori") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s %s %d\n", pc, instr, regname(p.op2), regname(p.op1), p.op3);
+    fprintf(stderr, "[%4d]:%-10s %s %s %d\n", pc_, instr, regname(p.op2), regname(p.op1), p.op3);
   else if(strcmp(instr, "beq") == 0 || strcmp(instr, "bne") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s %s %d\n", pc, instr, regname(p.op1), regname(p.op2), p.op3);
+    fprintf(stderr, "[%4d]:%-10s %s %s %d\n", pc_, instr, regname(p.op1), regname(p.op2), p.op3);
   else if(strcmp(instr, "lw") == 0 || strcmp(instr, "sw") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s %d(%s)\n", pc, instr, regname(p.op2), p.op3, regname(p.op1));
+    fprintf(stderr, "[%4d]:%-10s %s %d(%s)\n", pc_, instr, regname(p.op2), p.op3, regname(p.op1));
   else if(strcmp(instr, "lwc1") == 0 || strcmp(instr, "swc1") == 0)
-    fprintf(stderr, "[%4d]:%-10s $f%-2d %d(%s)\n", pc, instr, p.op2, p.op3, regname(p.op1));
+    fprintf(stderr, "[%4d]:%-10s $f%-2d %d(%s)\n", pc_, instr, p.op2, p.op3, regname(p.op1));
   else if(strcmp(instr, "add") == 0 || strcmp(instr, "sub") == 0 || strcmp(instr, "slt") == 0 || strcmp(instr, "and") == 0 || strcmp(instr, "or") == 0 || strcmp(instr, "xor") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s %s %s\n", pc, instr, regname(p.op3), regname(p.op1), regname(p.op2));
+    fprintf(stderr, "[%4d]:%-10s %s %s %s\n", pc_, instr, regname(p.op3), regname(p.op1), regname(p.op2));
   else if(strcmp(instr, "sllv") == 0)
-    fprintf(stderr, "[%4d]:%-10s %s %s %s\n", pc, instr, regname(p.op3), regname(p.op2), regname(p.op1));
+    fprintf(stderr, "[%4d]:%-10s %s %s %s\n", pc_, instr, regname(p.op3), regname(p.op2), regname(p.op1));
   else if(strcmp(instr, "inv.s") == 0 || strcmp(instr, "sqrt.s") == 0 || strcmp(instr, "mov.s") == 0 || strcmp(instr, "neg.s") == 0 || strcmp(instr, "trunc.w.s") == 0 || strcmp(instr, "cvt.s.w") == 0 || strcmp(instr, "c.eq.s") == 0 || strcmp(instr, "c.olt.s") == 0 || strcmp(instr, "c.ole.s") == 0)
-    fprintf(stderr, "[%4d]:%-10s $f%-2d $f%d\n", pc, instr, p.op2, p.op1);
-  else if(strcmp(instr, "add.s") == 0 || strcmp(instr, "sub.s") == 0 || strcmp(instr, "mul.s") == 0)    fprintf(stderr, "[%4d]:%-10s $f%-2d $f%-2d $f%d\n", pc, instr, p.op3, p.op2, p.op1);
+    fprintf(stderr, "[%4d]:%-10s $f%-2d $f%d\n", pc_, instr, p.op2, p.op1);
+  else if(strcmp(instr, "add.s") == 0 || strcmp(instr, "sub.s") == 0 || strcmp(instr, "mul.s") == 0)    fprintf(stderr, "[%4d]:%-10s $f%-2d $f%-2d $f%d\n", pc_, instr, p.op3, p.op2, p.op1);
   else if(p.inum != 44)
-    fprintf(stderr, "[%4d]: printbug %s\n", pc, instr);
+    fprintf(stderr, "[%4d]: printbug %s\n", pc_, instr);
  
   return;
 }

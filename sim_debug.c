@@ -7,22 +7,12 @@
 #include "table.h"
 #include "exec.h"
 
-volatile int sigint = 0, sigsegv = 0;
-
-void signalcatch(int signal)
-{
-  if(signal == SIGINT)
-    sigint = 1;
-  else if(signal == SIGSEGV)
-    sigsegv = 1;
-}
-
 int main(int argc, char *argv[])
 {
   FILE *fp;
   int i;
   Program pm[50000];
-  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = 0};
+  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = SA_RESTART};
 
   sigemptyset(&sigact.sa_mask);
   sigaction(SIGINT, &sigact, NULL);
@@ -55,7 +45,7 @@ int main(int argc, char *argv[])
   
   do{
     if(printflag == 1)
-      print_instr(pm[pc]);
+      print_instr(pm[pc], pc);
     
     while((breakflag == 1 && pc == breakpoint) || (stepflag == 1 && stepcount == 0))
       bpoint(pm[pc]);
@@ -67,10 +57,12 @@ int main(int argc, char *argv[])
 
   if(sigint == 1) {
     fprintf(stderr, "sigint caught\npc = %d\n", pc);
-    print_instr(pm[pc]);
+    for(i = -2; i < 3; i++)
+      print_instr(pm[pc+i], pc+i);
   } else if(sigsegv == 1) {
     fprintf(stderr, "sigsegv caught\npc = %d\n", pc);
-    print_instr(pm[pc]);
+    for(i = -2; i < 3; i++)
+      print_instr(pm[pc+i], pc+i);
   } else
     fprintf(stderr, "complete instructions\n");
   

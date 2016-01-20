@@ -12,4 +12,14 @@ void getoption(int, char **);
 void print_status();
 void load(FILE *, Program *);
 
+volatile int sigint = 0, sigsegv = 0;
+
+void signalcatch(int signal)
+{
+  if(signal == SIGINT)
+    sigint = 1;
+  else if(signal == SIGSEGV)
+    sigsegv = 1;
+}
+
 #endif

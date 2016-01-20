@@ -8,16 +8,6 @@
 #include "table.h"
 #include "exec.h"
 
-volatile int sigint = 0, sigsegv = 0;
-
-void signalcatch(int signal)
-{
-  if(signal == SIGINT)
-    sigint = 1;
-  else if(signal == SIGSEGV)
-    sigsegv = 1;
-}
-
 int main(int argc, char *argv[])
 {
   FILE *fp;
@@ -25,7 +15,7 @@ int main(int argc, char *argv[])
   Program pm[50000];
   struct timeval tv0,tv1;
   double time;
-  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = 0};
+  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = SA_RESTART};
 
   sigemptyset(&sigact.sa_mask);
   sigaction(SIGINT, &sigact, NULL);
@@ -33,6 +23,7 @@ int main(int argc, char *argv[])
 
   fpin = stdin;
   fpout = stdout;
+  fpinstr = stdout;
 
   for(i = 0; i < 32; i++) {
     reg[i].i = 0;
@@ -50,11 +41,11 @@ int main(int argc, char *argv[])
     return 0;
   }
 
+  getoption(argc, argv);
+
   load(fp, pm);
 
   fclose(fp);
-
-  getoption(argc, argv);
 
   gettimeofday(&tv0, NULL);
   
@@ -65,10 +56,12 @@ int main(int argc, char *argv[])
 
   if(sigint == 1) {
     fprintf(stderr, "sigint caught\npc = %d\n", pc);
-    print_instr(pm[pc]);
+    for(i = -4; i < 5; i++)
+      print_instr(pm[pc+i], pc+i);
   } else if(sigsegv == 1) {
     fprintf(stderr, "sigsegv caught\npc = %d\n", pc);
-    print_instr(pm[pc]);
+    for(i = -4; i < 5; i++)
+      print_instr(pm[pc+i], pc+i);
   } else
     fprintf(stderr, "complete instructions\n");
   

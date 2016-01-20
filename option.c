@@ -9,7 +9,7 @@ void getoption(int argc, char *argv[])
 {
   int i;
   
-  while((i = getopt(argc, argv, "hspvb:i:o:")) != -1) {
+  while((i = getopt(argc, argv, "hspv:b:i:o:")) != -1) {
     switch(i) {
     case 'h':
       fprintf(stderr, "options\n-h: help\n-s: step exec\n-p: print execut instructions\n-b n: breakpoint n\n");
@@ -29,11 +29,11 @@ void getoption(int argc, char *argv[])
       break;
     case 'i':
       fpin = fopen(optarg, "r");
-      fprintf(stderr, "%s\n", optarg);
+      fprintf(stderr, "input: %s\n", optarg);
       break;
     case 'o':
       fpout = fopen(optarg, "w");
-      fprintf(stderr, "%s\n", optarg);
+      fprintf(stderr, "output: %s\n", optarg);
       break;
     case ':':
       exit(1);
@@ -43,7 +43,7 @@ void getoption(int argc, char *argv[])
   }
 }
 
-void print_instr(Program);
+void print_instr(Program, int);
 int regnum(char *);
 void bpoint(Program instr)
 {
@@ -76,7 +76,7 @@ void bpoint(Program instr)
       for(i = 0; i < 32; i++)
         fprintf(stderr, "f%-2d  %8f  0x%08x\n", i, freg[i].f, freg[i].ui);
     } else if(strstr(p, "instr") != NULL) {
-      print_instr(instr);
+      print_instr(instr, pc);
     } else if(strstr(p, "memory") != NULL) {
       if(strstr(cmd, "-f") != NULL)
         f = 1;

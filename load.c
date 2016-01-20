@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "def.h"
 
+extern void print_instr(Program, int);
 extern inline int instr2inum(const char *);
 void load(FILE *fp, Program p[])
 {
@@ -228,12 +229,17 @@ void load(FILE *fp, Program p[])
     } else {
       fprintf(stderr, "this instruction is not defined : [%d]:0x%08x\n", j, instr);
     }
+
+    if(instrprint == 1)
+      print_instr(p[j], j);
+
     i++;
     j++;
   }
   p[j].inum = 44;
   
   reg[31].i = j;
+
 }
 
 int instr2inum(const char *instr)

@@ -26,6 +26,9 @@ This command remove built files.
 -s: step 最初からプログラムをステップ実行する。止まってる時に使えるコマンドは後述
 -p: printflag プリントフラグを立てる。実行した命令を逐一出力する。デバッグ以外では切っておくのが吉。切らないと fib 30 すらプログラムの出力が終わらない。
 -b n: breakpoint nをbreakpointに設定してプログラムを開始する。breakpointで使えるコマンドは後述
+-v: ロードした命令をpc付きでstderrに出力、どの命令が何番のpcになっているか確認できるよ
+-i path: プログラムに与える入力。レイトレにsldファイル与えるときこれ使って。-i付けないと標準入力になるからsyscallのデバッグには付けなくてよいかな。
+-o path: プログラムの出力をpathに吐くよ。レイトレの出力はこれで指定して。
 
 使い方はこう
 ./sim_debug -pb 10 (machinecodepath)
@@ -35,12 +38,11 @@ This command remove built files.
 
 breakpointで使えるコマンドは以下の通り
 
-step: 命令を一個実行する。次で止まる。入力なしでenterでもstep実行する。
+step: 命令を一個実行する。次で止まる。入力なしでenterでもstep実行する。step nでn回ステップするよ
 pflagon: プリントフラグを立てる。breakpoint設定したあと、命令を出力せずに特定のとこまで進めて、そこから命令を出力しながらデバッグするのに使える(と思われる)。
 pflagoff: プリントフラグを切る。デバッグ終わったら切ろう。
 print: 現在のpcやレジスタ、メモリの中身を出力する。使い方はこう
-print r3,  print f3,  print memory[3](最後に -fつけると、浮動小数表示する), print pc, print all(全てのレジスタの中身をint, floatと16進数で表示), print instr(これから行う命令を16進で出力)
-レジスタをソフトウェア名で指定したかったら言ってください。次に実行する命令や現在のpcが見たくなっても言ってください。なにか見たくなったら言ってください即時実装します。
+print r3,  print f3,  print memory[3](最後に -fつけると、浮動小数表示する), print pc, print all(全てのレジスタの中身をint, floatと16進数で表示), print instr(これから行う命令を出力)
 break: breakpointを再設定します。使い方はこう
 break 100
 run: breakflagを切ります。デバッグ終わったらpflagoffしてからrunしよう
@@ -49,17 +51,14 @@ run: breakflagを切ります。デバッグ終わったらpflagoffしてからr
 その他について
 総命令数と各命令の実行数を出力するようにしたから頑張って高速化しような
 
-レイトレでの入出力は標準入力と標準出力を使います。(どっかに書いてあった)
-ですので、syscallでの入出力もstdin,stdoutを用いてます。(大嘘)
 
-./sim_debug -p -b 10 -i input.txt -o result.txt ../compiler/suiteki/output
-
+レイトレはrateraycerフォルダにMakefile作ってあるからそっち使おうな
 
 三角関数のてすとについて
 
 make test
-でtrifunc_testなるものが作られ、こいつにcosだけをアセンブルしたものを食わせると、-13から13までを0.01刻みで実行した結果を出力してくれます。使い方としては
-./trifunc_test ../compiler/suiteki/output > cos_result.txt
+でlib_testなるものが作られ、こいつにcosだけをアセンブルしたものを食わせると、-13から13までを0.01刻みで実行した結果を出力してくれます。使い方としては
+./lib_test ../compiler/suiteki/output > cos_result.txt
 のようにアウトリダイレクトしてあげて、出てきたものをgnuplotなどに食わせてあげるとグラフが出てきます。
 テストしたいlibの書き方は、testディレクトリにあるcos_test.sみたいな感じでよいと思われます。
 中でやっていることは、基本的にはsim_mashineと同じで、ただ命令をforloopで回して、1ループごとに$f12に0.01刻みで値を代入してあげて、1ループ終わったらprintfしてあげてます。オプションもデバッグ機能も普通に使えます。

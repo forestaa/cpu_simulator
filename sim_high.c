@@ -8,9 +8,10 @@
 #include "table.h"
 #include "exec.h"
 
+void gnuplot(FILE *);
 int main(int argc, char *argv[])
 {
-  FILE *fp;
+  FILE *fp, *gp;
   int i;
   Program pm[50000];
   struct timeval tv0,tv1;
@@ -71,5 +72,33 @@ int main(int argc, char *argv[])
 
   fprintf(stderr, "time = %lf\nips = %f million instructions / sec\n", time, instructions/time/1000000);
 
+  gp = popen("gnuplot", "w");
+  gnuplot(gp);
+  pclose(gp);
+
   return 0;
+}
+
+void gnuplot(FILE *p)
+{
+  int i, max = 0;
+
+  for(i = 0; i < 44; i++)
+    if(max < icount[i])
+      max = icount[i];
+
+  fprintf(p, "set yrange [0:%d]\n", max+10000000);
+  fprintf(p, "set style fill solid border lc rgb 'black'\n");
+  fprintf(p, "set xtics font \"Arial, 8\"\n");
+  fprintf(p, "set xtics rotate by 270 (");
+  for(i = 0; i < 43; i++)
+    fprintf(p, "'%s' %d, ", inum2instr[i], i);
+  fprintf(p, "'%s' %d)\n", inum2instr[43], 43);
+  fprintf(p, "set terminal png size 800, 480\nset output 'statics.png'\n");
+  fprintf(p, "unset key\n");
+  fprintf(p, "plot '-' with boxes\n");
+  for(i = 0; i < 44; i++)
+    fprintf(p, "%d\n", icount[i]);
+  fprintf(p, "e\n");
+  fprintf(p, "exit\n");
 }

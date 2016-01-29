@@ -81,20 +81,16 @@ int main(int argc, char *argv[])
 
 void gnuplot(FILE *p)
 {
-  int i, max = 0;
+  int i;
 
-  for(i = 0; i < 44; i++)
-    if(max < icount[i])
-      max = icount[i];
-
-  fprintf(p, "set yrange [0:%d]\n", max+10000000);
   fprintf(p, "set style fill solid border lc rgb 'black'\n");
   fprintf(p, "set xtics font \"Arial, 8\"\n");
-  fprintf(p, "set xtics rotate by 270 (");
-  for(i = 0; i < 43; i++)
-    fprintf(p, "'%s' %d, ", inum2instr[i], i);
-  fprintf(p, "'%s' %d)\n", inum2instr[43], 43);
-  fprintf(p, "set terminal png size 800, 480\nset output 'statics.png'\n");
+  fprintf(p, "set xtics rotate by 270 ('%s' %d", inum2instr[0], 0);
+  for(i = 1; i < 44; i++)
+    fprintf(p, ", '%s' %d", inum2instr[i], i);
+  fprintf(p, ")\n");
+  fprintf(p, "set terminal png size 800, 480\n");
+  fprintf(p, "set output 'statics.png'\n");
   fprintf(p, "unset key\n");
   fprintf(p, "plot '-' with boxes\n");
   for(i = 0; i < 44; i++)

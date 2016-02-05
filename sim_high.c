@@ -16,11 +16,11 @@ int main(int argc, char *argv[])
   Program pm[50000];
   struct timeval tv0,tv1;
   double time;
-  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = SA_RESTART};
+  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = 0};
 
   sigemptyset(&sigact.sa_mask);
   sigaction(SIGINT, &sigact, NULL);
-  sigaction(SIGSEGV, &sigact, NULL);
+  //  sigaction(SIGSEGV, &sigact, NULL);
 
   fpin = stdin;
   fpout = stdout;

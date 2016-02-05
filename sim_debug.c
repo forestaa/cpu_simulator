@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
   FILE *fp;
   int i;
   Program pm[50000];
-  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = SA_RESTART}, ign = {.sa_handler = SIG_IGN, .sa_flags = SA_RESTART};
+  struct sigaction sigact = {.sa_handler = signalcatch, .sa_flags = 0}, ign = {.sa_handler = SIG_IGN, .sa_flags = SA_RESTART};
 
   sigemptyset(&sigact.sa_mask);
   sigemptyset(&ign.sa_mask);
   sigaction(SIGINT, &sigact, NULL);
-  sigaction(SIGSEGV, &sigact, NULL);
+  //  sigaction(SIGSEGV, &sigact, NULL);
 
   fpin = stdin;
   fpout = stdout;
@@ -74,8 +74,10 @@ int main(int argc, char *argv[])
   
   print_status();
   
-  fclose(fpin);
-  fclose(fpout);
+  if(inflag == 1)
+    fclose(fpin);
+  if(outflag == 1)
+    fclose(fpout);
 
   return 0;
 }

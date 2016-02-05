@@ -3,7 +3,7 @@
 
 long long unsigned int instructions = 0;
 unsigned int icount[45] = {0};
-int stepflag = 0, stepcount = 0, breakflag = 0, breakpoint, printflag = 0, instrprint = 0;
+int stepflag = 0, stepcount = 0, breakflag = 0, breakpoint, printflag = 0, instrprint = 0, inflag = 0, outflag = 0;
 int pc = 0, cc = 0;
 Value reg[32], freg[32], memory[1048576];
 FILE *fpin, *fpout;

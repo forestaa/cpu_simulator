@@ -30,10 +30,12 @@ void getoption(int argc, char *argv[])
     case 'i':
       fpin = fopen(optarg, "r");
       fprintf(stderr, "input: %s\n", optarg);
+      inflag = 1;
       break;
     case 'o':
       fpout = fopen(optarg, "w");
       fprintf(stderr, "output: %s\n", optarg);
+      outflag = 1;
       break;
     case ':':
       exit(1);

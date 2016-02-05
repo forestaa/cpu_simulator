@@ -17,7 +17,7 @@ typedef struct Program_ {
   
 extern int pc, cc;
 extern Value reg[32], freg[32], memory[1048576];
-extern int stepflag, stepcount, breakflag, breakpoint, printflag, instrprint;
+extern int stepflag, stepcount, breakflag, breakpoint, printflag, instrprint, inflag, outflag;
 extern long long unsigned int instructions;
 extern unsigned int icount[45];
 extern FILE *fpin, *fpout;

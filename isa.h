@@ -205,7 +205,11 @@ static inline void add_s(int fd, int fs, int ft)
 static inline void sub_s(int fd, int fs, int ft)
 {
   freg[fd].f = freg[fs].f - freg[ft].f;
-
+  
+  /*Value tmp;
+  tmp.f = -freg[ft].f;
+  freg[fd].ui = fadd(freg[fs].ui, tmp.ui);
+  */
   pc++;
 }
 
@@ -243,10 +247,8 @@ static inline void mov_s(int fd, int fs)
   pc++;
 }
 
-//uint32_t fneg(uint32_t);
 static inline void neg_s(int fd, int fs)
 {
-  //freg[fd].ui = fneg(freg[fs].ui);
   freg[fd].f = -freg[fs].f;
 
   pc++;

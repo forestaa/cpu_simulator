@@ -65,16 +65,18 @@ int main(int argc, char *argv[])
   } else
     fprintf(stderr, "complete instructions\n");
   
-  print_status();
+  print_status(); 
   
-  fclose(fpin);
-  fclose(fpout);
-
   fprintf(stderr, "time = %lf\nips = %f million instructions / sec\n", time, instructions/time/1000000);
+ 
+  if(inflag == 1)
+    fclose(fpin);
+  if(outflag == 1)
+    fclose(fpout);
 
-  gp = popen("gnuplot", "w");
-  gnuplot(gp);
-  pclose(gp);
+  //  gp = popen("gnuplot", "w");
+  //  gnuplot(gp);
+  //  pclose(gp);
 
   return 0;
 }

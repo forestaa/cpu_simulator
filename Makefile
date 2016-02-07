@@ -4,7 +4,7 @@ SRCS = print.c option.c register.c load.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS = $(SRCS:%.c=%.d) sim_high.d sim_debug.d lib_test.d
 FPUDIR = ../FPU
-FPUSRCS = fadd.c def.c fmul.c fsqrt.c finv.c ftoi.c itof.c
+FPUSRCS = fadd.c def.c fmul.c fsqrt.c finv.c ftoi.c itof.c finvtable.c
 FPUOBJS = $(FPUSRCS:%.c=$(FPUDIR)/%.o)
 
 TARGET = sim

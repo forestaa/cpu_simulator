@@ -193,10 +193,10 @@ static inline void lw(int rt, int offset, int base)
   pc++;
 }
 
-//uint32_t fadd(uint32_t, uint32_t);
+uint32_t fadd(uint32_t, uint32_t);
 static inline void add_s(int fd, int fs, int ft)
 {
-  //freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
+  freg[fd].ui = fadd(freg[fs].ui, freg[ft].ui);
   freg[fd].f = freg[fs].f + freg[ft].f;
 
   pc++;
@@ -204,29 +204,29 @@ static inline void add_s(int fd, int fs, int ft)
 
 static inline void sub_s(int fd, int fs, int ft)
 {
-  freg[fd].f = freg[fs].f - freg[ft].f;
+  //freg[fd].f = freg[fs].f - freg[ft].f;
   
-  /*Value tmp;
+  Value tmp;
   tmp.f = -freg[ft].f;
   freg[fd].ui = fadd(freg[fs].ui, tmp.ui);
-  */
+  
   pc++;
 }
 
-//uint32_t fmul(uint32_t, uint32_t);
+uint32_t fmul(uint32_t, uint32_t);
 static inline void mul_s(int fd, int fs, int ft)
 {
-  //freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
-  freg[fd].f = freg[fs].f * freg[ft].f;
+  freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
+  //freg[fd].f = freg[fs].f * freg[ft].f;
 
   pc++;
 }
 
-//uint32_t finv(uint32_t);
+uint32_t finv(uint32_t);
 static inline void inv_s(int fd, int fs)
 {
-  freg[fd].f = 1 / freg[fs].f;
-  //freg[fd].ui = finv(freg[fs].ui);
+  //freg[fd].f = 1 / freg[fs].f;
+  freg[fd].ui = finv(freg[fs].ui);
 
   pc++;
 }
@@ -332,24 +332,24 @@ static inline void mtc1(int rt, int fs)
   pc++;
 }
 
-//uint32_t itof(uint32_t);
+uint32_t itof(uint32_t);
 static inline void cvt_s_w(int fd, int fs)
 {
-  freg[fd].f = freg[fs].i;
-  //freg[fd].ui = itof(freg[fs].ui);
+  //freg[fd].f = freg[fs].i;
+  freg[fd].ui = itof(freg[fs].ui);
 
   pc++;
 }
 
-//uint32_t ftoi(uint32_t);
+uint32_t ftoi(uint32_t);
 static inline void trunc_w_s(int fd, int fs)
 {
-  freg[fd].i = freg[fs].f;
-  //freg[fd].ui = ftoi(freg[fs].ui);
+  //freg[fd].i = freg[fs].f;
+  freg[fd].ui = ftoi(freg[fs].ui);
 
   pc++;
 }
-
+//int counter = 0;
 static inline void syscall()
 {
   if(reg[2].i == 1)
@@ -362,9 +362,14 @@ static inline void syscall()
   else if(reg[2].i == 6)
     receive_data(&freg[0], 4, 1, fpin);
     //receive_data(stdin, "%f", &freg[0].f);
-  else if(reg[2].i == 11)
+  else if(reg[2].i == 11) {
     fprintf(fpout, "%c", reg[4].c);
-  else if(reg[2].i == 12)
+    /* if(reg[4].c == '\n') */
+    /*   counter++; */
+    /* if(counter >= 2158) */
+    /*   stepflag = 1; */
+
+  } else if(reg[2].i == 12)
     receive_data(&reg[2], 1, 1, fpin);
     //receive_data(stdin, "%c", &reg[2]);
   else if(reg[2].i == -1)

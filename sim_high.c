@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
   gettimeofday(&tv0, NULL);
   
-  while(exec(pm[pc]) == 0 && sigint == 0 && sigsegv == 0);
+  while(exec(pm[pc]) == 0 && sigint == 0);
 
   gettimeofday(&tv1, NULL);
   time = (double)(tv1.tv_sec - tv0.tv_sec + (tv1.tv_usec - tv0.tv_usec)*0.001*0.001);

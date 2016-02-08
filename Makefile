@@ -4,7 +4,7 @@ SRCS = print.c option.c register.c load.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS = $(SRCS:%.c=%.d) sim_high.d sim_debug.d lib_test.d
 FPUDIR = ../FPU
-FPUSRCS = fadd.c def.c fmul.c fsqrt.c finv.c ftoi.c itof.c finvtable.c
+FPUSRCS = fadd.c def.c fmul.c fsqrt.c finv.c ftoi.c itof.c
 FPUOBJS = $(FPUSRCS:%.c=$(FPUDIR)/%.o)
 
 TARGET = sim
@@ -16,7 +16,7 @@ default: $(TARGET)
 $(TARGET): sim_high.o $(OBJS) $(FPUOBJS)
 		$(CC) $(CFLAGS) -o $@ $^ -lm
 
-debug: sim_debug.o $(OBJS)
+debug: sim_debug.o $(OBJS) $(FPUOBJS)
 		$(CC) $(CFLAGS) -o $(DEBUG) $^ -lm
 
 test: lib_test.o $(OBJS)

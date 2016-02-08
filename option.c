@@ -60,6 +60,7 @@ void bpoint(Program instr)
   }
   p = strchr(cmd, '\n');
   *p = '\0';
+
   if(strcmp(cmd, "step") == 0 || strcmp(cmd, "\0") == 0)
     stepcount++;
   else if(strstr(cmd, "step ") != NULL) {
@@ -131,7 +132,8 @@ void bpoint(Program instr)
   } else if(strcmp(cmd, "run") == 0) {
     stepflag = 0;
     breakflag = 0;
-  }
+  } else if(strcmp(cmd, "exit") == 0)
+    exit(0);
   else
     fprintf(stderr, "usage\nstep: one instruction execute\nprintflag: printflag goes on\nprint rn: print r[n]\nprint memory[n]: print memory[n]\nbreak n: n is set as breakpoint\nrun: run until quit\n");
 }

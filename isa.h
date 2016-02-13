@@ -362,11 +362,12 @@ static inline void syscall()
     receive_data(&freg[0], 4, 1, fpin);
   else if(reg[2].i == 11) {
     fprintf(fpout, "%c", reg[4].c);
-    //    if(reg[4].c == '\n')
-    //      counter++;
-    //    if(counter >= 2663)
-    //      stepflag = 1;
-
+    /*
+    if(reg[4].c == '\n')
+      counter++;
+    if(counter >= 2326)
+      stepflag = 1;
+    */
   } else if(reg[2].i == 12)
     receive_data(&reg[2], 1, 1, fpin);
   else if(reg[2].i == -1)

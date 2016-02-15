@@ -216,8 +216,8 @@ static inline void sub_s(int fd, int fs, int ft)
 //uint32_t fmul(uint32_t, uint32_t);
 static inline void mul_s(int fd, int fs, int ft)
 {
-  //freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
-  freg[fd].f = freg[fs].f * freg[ft].f;
+  freg[fd].ui = fmul(freg[fs].ui, freg[ft].ui);
+  //freg[fd].f = freg[fs].f * freg[ft].f;
 
   pc++;
 }
@@ -349,6 +349,7 @@ static inline void trunc_w_s(int fd, int fs)
 
   pc++;
 }
+
 //int counter = 0;
 static inline void syscall()
 {

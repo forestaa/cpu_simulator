@@ -3,6 +3,7 @@
 '#'*
 sim
 sim_debug
+sim-hs
 trifunc_test
 print
 test_
